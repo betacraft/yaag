@@ -111,7 +111,6 @@ func readHeaders(req *http.Request) map[string]string {
 		}
 		headers[values[0]] = values[1]
 	}
-	//printMap(headers)
 	return headers
 }
 
