@@ -44,7 +44,7 @@
     <!-- /.container-fluid -->
 </nav>
 <div class="container" style="margin-top: 70px;">
-    <p><strong>Base URL : </strong><code>{{.BaseLink}}</code></p>
+    <h4><strong>Base URL : </strong><code>{{.BaseLink}}</code></h4>
     <hr>
     {{ range $wrapperKey, $wrapperValue := .array }}
 
@@ -88,6 +88,9 @@
         <p> <H4> Request Body </H4> </p>
         <pre> {{ $wrapperValue.RequestBody }} </pre>
         {{ end }}
+
+        <p><h4> Response Code</h4></p>
+        <pre>{{ $wrapperValue.ResponseCode }}</pre>
 
         {{ if $wrapperValue.ResponseHeader }}
         <p> <H4> Response Headers </H4> </p>
