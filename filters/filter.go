@@ -3,8 +3,8 @@ package filters
 import (
 	"encoding/json"
 	"encoding/xml"
-	"github.com/gophergala/middleware"
-	"github.com/gophergala/yaag"
+	"github.com/gophergala/yaag/middleware"
+	"github.com/gophergala/yaag/yaag"
 	"github.com/revel/revel"
 	"net/http/httptest"
 	"strings"
@@ -73,8 +73,7 @@ func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
 		headers[k] = strings.Join(v, " ")
 	}
 
-	htmlValues := yaag.HtmlValueContainer{}
-
+	htmlValues := yaag
 	htmlValues.BaseLink = c.Request.URL.Host
 	htmlValues.MethodType = httpVerb
 	htmlValues.CurrentPath = c.Request.URL.Path

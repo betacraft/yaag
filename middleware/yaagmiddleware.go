@@ -63,7 +63,7 @@ func before(apiCall *yaag.APICall, req *http.Request) {
 			readPostForm(req)
 		case "application/json":
 			log.Println("Reading body")
-			readBody(req)
+			ReadBody(req)
 		}
 	}
 }
