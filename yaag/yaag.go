@@ -9,15 +9,14 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	_ "path/filepath"
+	"path/filepath"
 )
 
 type HtmlValueContainer struct {
-	BaseLink    string
 	CurrentPath string
 	MethodType  string
 
-	PostForm map[string]interface{}
+	PostForm map[string]string
 
 	RequestHeader    map[string]string
 	ResponseHeader   map[string]string
@@ -27,30 +26,45 @@ type HtmlValueContainer struct {
 	ResponseBody string
 }
 
-func main() {
-	value := HtmlValueContainer{BaseLink: " http://www.facebook.com ",
-		MethodType: "GET", CurrentPath: "/login/:id", RequestHeader: map[string]string{"Content-Type": "application/json", "Accept": "application/json"},
-		RequestBody: "{ 'main' : { 'id' : 2, 'name' : 'Gopher' }}"}
-	GenerateHtml(&value)
+type ApiCallValue struct {
+	BaseLink   string
+	HtmlValues []HtmlValueContainer
 }
 
-func GenerateHtml(value *HtmlValueContainer) {
+type Config struct {
+	Init    bool
+	DocPath string
+}
+
+func main() {
+	firstApi := HtmlValueContainer{MethodType: "GET", CurrentPath: "/login/:id", RequestHeader: map[string]string{"Content-Type": "application/json", "Accept": "application/json"},
+		RequestBody: "{ 'main' : { 'id' : 2, 'name' : 'Gopher' }}"}
+
+	secondApi := HtmlValueContainer{MethodType: "POST", CurrentPath: "/singup", RequestHeader: map[string]string{"Content-Type": "application/json", "Accept": "application/json"},
+		ResponseBody: "{ 'main' : { 'Key' : 'ABC-123-XYZ', 'name' : 'Gopher' }}"}
+
+	config := Config{Init: false, DocPath: "/home/Kaustubh/Desktop/go-projects/yaag/src/yaag/yaag/html/home.html"}
+
+	valueArray := []HtmlValueContainer{secondApi, firstApi}
+	allApis := ApiCallValue{BaseLink: "www.google.com", HtmlValues: valueArray}
+	GenerateHtml(&allApis, &config)
+}
+
+func GenerateHtml(value *ApiCallValue, config *Config) {
 	t := template.New("API Documentation")
-	/*filePath, err := filepath.Abs("../htmlTemplate.html")
-	log.Println(filePath)*/
+	filePath, err := filepath.Abs(config.DocPath)
 	file, err := ioutil.ReadFile("homeTemplate.html")
 	if err != nil {
 		log.Println(err)
 		return
 	}
 	htmlString := string(file)
-	//log.Println("Html String ", htmlString)
 	t, err = t.Parse(htmlString)
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	homeHtmlFile, err := os.Create("home.html")
+	homeHtmlFile, err := os.Create(filePath)
 	defer homeHtmlFile.Close()
 
 	if err != nil {
@@ -59,7 +73,13 @@ func GenerateHtml(value *HtmlValueContainer) {
 	}
 	homeWriter := io.Writer(homeHtmlFile)
 
-	t.Execute(homeWriter, map[string]interface{}{"MethodType": value.MethodType, "BaseLink": value.BaseLink, "CurrentPath": value.CurrentPath, "RequestHeaders": value.RequestHeader,
-		"RequestUrlParams": value.RequestUrlParams, "RequestBody": value.RequestBody})
+	/*for _, apiCallValue := range value.HtmlValues {
+		t.Execute(homeWriter, map[string]interface{}{"MethodType": apiCallValue.MethodType, "BaseLink": value.BaseLink, "CurrentPath": apiCallValue.CurrentPath, "RequestHeaders": apiCallValue.RequestHeader,
+			"RequestUrlParams": apiCallValue.RequestUrlParams, "RequestBody": apiCallValue.RequestBody,
+			"ResponseBody": apiCallValue.ResponseBody})
+	}*/
+
+	t.Execute(homeWriter, map[string]interface{}{"array": value.HtmlValues,
+		"BaseLink": value.BaseLink})
 
 }

@@ -1,43 +1,63 @@
 <html>
 <title> API Documentation </title>
+<head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+</head>
 <body> 
 
 	BaseLink <a href= {{.BaseLink}} > {{.BaseLink}} </a>
 
-	<p> CurrentPath = {{.CurrentPath}}
+	{{ range $wrapperKey, $wrapperValue :=  .array }} 
 
-	<p> MethodType = {{.MethodType}} </p>
+		<p> CurrentPath = {{$wrapperValue.CurrentPath}}
 
-	{{ if .RequestHeaders }}
-	<p> <H4> Request Headers </H4> </p>
-	{{ range $key, $value := .RequestHeaders }}
-   		<li><strong>{{ $key }}</strong>: {{ $value }}</li>
-	{{ end }}
-	{{ end }}
+		<p> MethodType = {{$wrapperValue.MethodType}} </p>
 
-	{{ if .RequestUrlParams }}
-	<p> <H4> URL Params </H4> </p>
-	{{ range $key, $value := .RequestUrlParams }}
-   		<li><strong>{{ $key }}</strong>: {{ $value }}</li>
-	{{ end }}
-	{{ end }}
+		{{ if $wrapperValue.RequestHeader }}
+			<p> <H4> Request Headers </H4> </p>
+			{{ range $key, $value := $wrapperValue.RequestHeader }}
+   				<li><strong>{{ $key }}</strong>: {{ $value }}</li>
+			{{ end }}
+		{{ end }}
 
- 	{{ if .RequestBody }}
-	<p> <H4> Request Body </H4> </p>
-	<p> {{ .RequestBody }} </p>
-	{{ end }}	
+		{{ if $wrapperValue.PostForm }}
+			<p> <H4> Post Form </H4> </p>
+			{{ range $key, $value := $wrapperValue.PostForm }}
+   				<li><strong>{{ $key }}</strong>: {{ $value }}</li>
+			{{ end }}
+		{{ end }}
 
-	{{ if .ResponseHeaders }}
-	<p> <H4> Response Headers </H4> </p>
-	{{ range $key, $value := .ResponseHeaders }}
-   		<li><strong>{{ $key }}</strong>: {{ $value }}</li>
-	{{ end }}
-	{{ end }}
+		{{ if $wrapperValue.RequestUrlParams }}
+			<p> <H4> URL Params </H4> </p>
+			{{ range $key, $value := $wrapperValue.RequestUrlParams }}
+   				<li><strong>{{ $key }}</strong>: {{ $value }}</li>
+			{{ end }}
+		{{ end }}
 
-	{{ if .ResponseBody }}
-	<p> <H4> Response Body </H4> </p>
-	<p> {{ .ResponseBody }} </p>
-	{{ end }}		
+		{{ if $wrapperValue.RequestBody }}
+			<p> <H4> Request Body </H4> </p>
+			<p> {{ $wrapperValue.RequestBody }} </p>
+		{{ end }}	
+
+		{{ if $wrapperValue.ResponseHeader }}
+			<p> <H4> Response Headers </H4> </p>
+			{{ range $key, $value := $wrapperValue.ResponseHeader }}
+   				<li><strong>{{ $key }}</strong>: {{ $value }}</li>
+			{{ end }}
+		{{ end }}
+
+		{{ if $wrapperValue.ResponseBody }}
+			<p> <H4> Response Body </H4> </p>
+			<p> {{ $wrapperValue.ResponseBody }} </p>
+		{{ end }}
+
+	{{ end}}
 
 </body>
 </html>
