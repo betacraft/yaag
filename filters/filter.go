@@ -3,9 +3,10 @@ package filters
 import (
 	"encoding/json"
 	"encoding/xml"
-	"github.com/gophergala/middleware"
-	"github.com/gophergala/yaag"
+	"github.com/gophergala/yaag/middleware"
+	"github.com/gophergala/yaag/yaag"
 	"github.com/revel/revel"
+	"log"
 	"net/http/httptest"
 	"strings"
 )
@@ -63,6 +64,7 @@ func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
 			}
 		}
 	}
+	log.Println(hasXml, hasJson)
 	// call remaiing filters
 	fc[0](c, fc[1:])
 
@@ -73,12 +75,10 @@ func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
 		headers[k] = strings.Join(v, " ")
 	}
 
-	htmlValues := yaag.HtmlValueContainer{}
-
-	htmlValues.BaseLink = c.Request.URL.Host
+	htmlValues := yaag.APICall{}
 	htmlValues.MethodType = httpVerb
 	htmlValues.CurrentPath = c.Request.URL.Path
-	htmlValues.PostForm = make(map[string]striing)
+	htmlValues.PostForm = make(map[string]string)
 	for k, v := range c.Params.Form {
 		htmlValues.PostForm[k] = strings.Join(v, " ")
 	}
@@ -94,5 +94,9 @@ func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
 		htmlValues.ResponseHeader[k] = strings.Join(v, " ")
 	}
 	htmlValues.ResponseCode = w.Code
-	yaag.GenerateHtml(&htmlValues)
+
+	yaag.ApiCallValueInstance.BaseLink = c.Request.URL.Host
+
+	config := yaag.Config{Init: false, DocPath: "apidoc.html"}
+	yaag.GenerateHtml(&htmlValues, &config)
 }

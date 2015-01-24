@@ -153,23 +153,27 @@ type Config struct {
 	DocPath  string
 }
 
+var ApiCallValueInstance = &ApiCallValue{}
+
 func main() {
 
-	firstApi := APICall{Id: 1, MethodType: "GET", CurrentPath: "/login/:id", RequestHeader: map[string]string{"Content-Type": "application/json", "Accept": "application/json"},
+	//	firstApi := APICall{Id: 1, MethodType: "GET", CurrentPath: "/login/:id", RequestHeader: map[string]string{"Content-Type": "application/json", "Accept": "application/json"},
 
-		RequestBody: "{ 'main' : { 'id' : 2, 'name' : 'Gopher' }}"}
+	//		RequestBody: "{ 'main' : { 'id' : 2, 'name' : 'Gopher' }}"}
 
 	secondApi := APICall{Id: 2, MethodType: "POST", CurrentPath: "/singup", RequestHeader: map[string]string{"Content-Type": "application/json", "Accept": "application/json"},
 		ResponseBody: "{ 'main' : { 'Key' : 'ABC-123-XYZ', 'name' : 'Gopher' }}"}
 
 	config := Config{Init: false, DocPath: "html/home.html", DocTitle: "YAAG"}
 
-	valueArray := []APICall{secondApi, firstApi}
-	allApis := ApiCallValue{BaseLink: "www.google.com", HtmlValues: valueArray}
-	GenerateHtml(&allApis, &config)
+	//	valueArray := []APICall{secondApi, firstApi}
+	//	allApis := ApiCallValue{BaseLink: "www.google.com", HtmlValues: valueArray}
+	GenerateHtml(&secondApi, &config)
 }
 
-func GenerateHtml(value *ApiCallValue, config *Config) {
+func GenerateHtml(htmlValue *APICall, config *Config) {
+	htmlValue.Id = len(ApiCallValueInstance.HtmlValues) + 1
+	ApiCallValueInstance.HtmlValues = append(ApiCallValueInstance.HtmlValues, *htmlValue)
 	t := template.New("API Documentation")
 	filePath, err := filepath.Abs(config.DocPath)
 	// file, err := ioutil.ReadFile("templates/main.html")
@@ -191,6 +195,6 @@ func GenerateHtml(value *ApiCallValue, config *Config) {
 		return
 	}
 	homeWriter := io.Writer(homeHtmlFile)
-	t.Execute(homeWriter, map[string]interface{}{"array": value.HtmlValues,
-		"BaseLink": value.BaseLink, "Title": config.DocTitle})
+	t.Execute(homeWriter, map[string]interface{}{"array": ApiCallValueInstance.HtmlValues,
+		"BaseLink": ApiCallValueInstance.BaseLink, "Title": config.DocTitle})
 }
