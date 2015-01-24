@@ -12,22 +12,10 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/http/httputil"
+	"net/url"
 	"strings"
+	"yaag/yaag"
 )
-
-type ApiCall struct {
-	Path string
-
-	ProtocolMajor int
-	ProtocolMinor int
-
-	RequestHeaders  map[string]string
-	QueryParameters map[string]string
-	Body            string
-	ResponseHeaders map[string]string
-	ResponseStatus  int
-	Response        string
-}
 
 var reqWriteExcludeHeaderDump = map[string]bool{
 	"Host":              true, // not in Header map anyway
@@ -46,22 +34,67 @@ func Handle(next func(http.ResponseWriter, *http.Request)) http.Handler {
 
 func (y *YaagHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	writer := httptest.NewRecorder()
-	before(r)
+	apiCall := yaag.APICall{}
+	before(&apiCall, r)
 	y.next(writer, r)
-	after(writer, w, r)
+	after(&apiCall, writer, w, r)
 }
 
 func HandleFunc(next func(http.ResponseWriter, *http.Request)) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		apiCall := yaag.APICall{}
 		writer := httptest.NewRecorder()
-		before(r)
+		before(&apiCall, r)
 		next(writer, r)
-		after(writer, w, r)
+		after(&apiCall, writer, w, r)
 	}
 }
 
-func before(req *http.Request) {
-	readHeaders(req)
+func before(apiCall *yaag.APICall, req *http.Request) {
+	headers := readHeaders(req)
+	val, ok := headers["Content-Type"]
+	log.Println(val)
+	if ok {
+		switch strings.TrimSpace(headers["Content-Type"]) {
+		case "application/x-www-form-urlencoded":
+			fallthrough
+		case "application/json, application/x-www-form-urlencoded":
+			log.Println("Reading form")
+			readPostForm(req)
+		case "application/json":
+			log.Println("Reading body")
+			readBody(req)
+		}
+	}
+}
+
+func readQueryParams(req *http.Request) map[string]string {
+	params := map[string]string{}
+	u, err := url.Parse(req.RequestURI)
+	if err != nil {
+		return params
+	}
+	for _, param := range strings.Split(u.Query().Encode(), "&") {
+		value := strings.Split(param, "=")
+		params[value[0]] = value[1]
+	}
+	return params
+}
+
+func printMap(m map[string]string) {
+	for key, value := range m {
+		log.Println(key, "=>", value)
+	}
+}
+
+func readPostForm(req *http.Request) map[string]string {
+	postForm := map[string]string{}
+	log.Println("", *readBody(req))
+	for _, param := range strings.Split(*readBody(req), "&") {
+		value := strings.Split(param, "=")
+		postForm[value[0]] = value[1]
+	}
+	return postForm
 }
 
 func readHeaders(req *http.Request) map[string]string {
@@ -70,10 +103,16 @@ func readHeaders(req *http.Request) map[string]string {
 	if err != nil {
 		return map[string]string{}
 	}
-	var headers map[string]string
-
-	log.Println(b.String())
-	return map[string]string{}
+	headers := map[string]string{}
+	for _, header := range strings.Split(b.String(), "\n") {
+		values := strings.Split(header, ":")
+		if strings.EqualFold(values[0], "") {
+			continue
+		}
+		headers[values[0]] = values[1]
+	}
+	//printMap(headers)
+	return headers
 }
 
 func readBody(req *http.Request) *string {
@@ -92,7 +131,6 @@ func readBody(req *http.Request) *string {
 	if req.Body == nil {
 		return nil
 	}
-
 	var dest io.Writer = b
 	if chunked {
 		dest = httputil.NewChunkedWriter(dest)
@@ -106,7 +144,7 @@ func readBody(req *http.Request) *string {
 	return &body
 }
 
-func after(writer *httptest.ResponseRecorder, w http.ResponseWriter, r *http.Request) {
+func after(apiCall *yaag.APICall, writer *httptest.ResponseRecorder, w http.ResponseWriter, r *http.Request) {
 	if strings.Contains(r.RequestURI, ".ico") {
 		fmt.Fprintf(w, writer.Body.String())
 		return

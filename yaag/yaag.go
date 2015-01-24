@@ -1,7 +1,7 @@
 /*
  * This is the main core of the yaag package
  */
-package main
+package yaag
 
 import (
 	"html/template"
@@ -12,12 +12,12 @@ import (
 	_ "path/filepath"
 )
 
-type HtmlValueContainer struct {
+type APICall struct {
 	BaseLink    string
 	CurrentPath string
 	MethodType  string
 
-	PostForm map[string]interface{}
+	PostForm map[string]string
 
 	RequestHeader    map[string]string
 	ResponseHeader   map[string]string
@@ -28,13 +28,13 @@ type HtmlValueContainer struct {
 }
 
 func main() {
-	value := HtmlValueContainer{BaseLink: " http://www.facebook.com ",
+	value := APICall{BaseLink: " http://www.facebook.com ",
 		MethodType: "GET", CurrentPath: "/login/:id", RequestHeader: map[string]string{"Content-Type": "application/json", "Accept": "application/json"},
 		RequestBody: "{ 'main' : { 'id' : 2, 'name' : 'Gopher' }}"}
 	GenerateHtml(&value)
 }
 
-func GenerateHtml(value *HtmlValueContainer) {
+func GenerateHtml(value *APICall) {
 	t := template.New("API Documentation")
 	/*filePath, err := filepath.Abs("../htmlTemplate.html")
 	log.Println(filePath)*/
