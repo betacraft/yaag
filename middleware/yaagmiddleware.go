@@ -40,10 +40,10 @@ func HandleFunc(next func(http.ResponseWriter, *http.Request)) func(http.Respons
 }
 
 func before(req *http.Request) {
-	log.Println(*readBody(req))
+	log.Println(*ReadBody(req))
 }
 
-func readBody(req *http.Request) *string {
+func ReadBody(req *http.Request) *string {
 	save := req.Body
 	var err error
 	if req.Body == nil {
