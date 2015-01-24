@@ -15,6 +15,27 @@ import (
 	"strings"
 )
 
+type ApiCall struct {
+	Path string
+
+	ProtocolMajor int
+	ProtocolMinor int
+
+	RequestHeaders  map[string]string
+	QueryParameters map[string]string
+	Body            string
+	ResponseHeaders map[string]string
+	ResponseStatus  int
+	Response        string
+}
+
+var reqWriteExcludeHeaderDump = map[string]bool{
+	"Host":              true, // not in Header map anyway
+	"Content-Length":    true,
+	"Transfer-Encoding": true,
+	"Trailer":           true,
+}
+
 type YaagHandler struct {
 	next func(http.ResponseWriter, *http.Request)
 }
@@ -40,7 +61,19 @@ func HandleFunc(next func(http.ResponseWriter, *http.Request)) func(http.Respons
 }
 
 func before(req *http.Request) {
-	log.Println(*readBody(req))
+	readHeaders(req)
+}
+
+func readHeaders(req *http.Request) map[string]string {
+	b := bytes.NewBuffer([]byte(""))
+	err := req.Header.WriteSubset(b, reqWriteExcludeHeaderDump)
+	if err != nil {
+		return map[string]string{}
+	}
+	var headers map[string]string
+
+	log.Println(b.String())
+	return map[string]string{}
 }
 
 func readBody(req *http.Request) *string {
