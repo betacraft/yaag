@@ -13,7 +13,7 @@ import (
 )
 
 type APICall struct {
-	BaseLink string
+	Id int
 
 	CurrentPath string
 	MethodType  string
@@ -31,7 +31,7 @@ type APICall struct {
 
 type ApiCallValue struct {
 	BaseLink   string
-	HtmlValues []HtmlValueContainer
+	HtmlValues []APICall
 }
 
 type Config struct {
@@ -41,22 +41,21 @@ type Config struct {
 
 func main() {
 
-	firstApi := HtmlValueContainer{MethodType: "GET", CurrentPath: "/login/:id", RequestHeader: map[string]string{"Content-Type": "application/json", "Accept": "application/json"},
+	firstApi := APICall{Id: 1, MethodType: "GET", CurrentPath: "/login/:id", RequestHeader: map[string]string{"Content-Type": "application/json", "Accept": "application/json"},
 
 		RequestBody: "{ 'main' : { 'id' : 2, 'name' : 'Gopher' }}"}
 
-	secondApi := HtmlValueContainer{MethodType: "POST", CurrentPath: "/singup", RequestHeader: map[string]string{"Content-Type": "application/json", "Accept": "application/json"},
+	secondApi := APICall{Id: 2, MethodType: "POST", CurrentPath: "/singup", RequestHeader: map[string]string{"Content-Type": "application/json", "Accept": "application/json"},
 		ResponseBody: "{ 'main' : { 'Key' : 'ABC-123-XYZ', 'name' : 'Gopher' }}"}
 
-	config := Config{Init: false, DocPath: "/home/Kaustubh/Desktop/go-projects/yaag/src/yaag/yaag/html/home.html"}
+	config := Config{Init: false, DocPath: "html/home.html"}
 
-	valueArray := []HtmlValueContainer{secondApi, firstApi}
+	valueArray := []APICall{secondApi, firstApi}
 	allApis := ApiCallValue{BaseLink: "www.google.com", HtmlValues: valueArray}
 	GenerateHtml(&allApis, &config)
 }
 
 func GenerateHtml(value *ApiCallValue, config *Config) {
-
 	t := template.New("API Documentation")
 	filePath, err := filepath.Abs(config.DocPath)
 	file, err := ioutil.ReadFile("templates/main.html")
