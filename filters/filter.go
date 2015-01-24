@@ -3,12 +3,11 @@ package filters
 import (
 	"encoding/json"
 	"encoding/xml"
+	"github.com/gophergala/middleware"
+	"github.com/gophergala/yaag"
 	"github.com/revel/revel"
-	"log"
 	"net/http/httptest"
 	"strings"
-	"yaag/middleware"
-	"yaag/yaag"
 )
 
 func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
@@ -39,7 +38,12 @@ func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
 				hasJson = true
 			}
 		} else {
-			//TODO check if query params are json encoded
+			err := json.Unmarshal([]byte(c.Request.URL.RawQuery), &customParams)
+			if err != nil {
+				log.Println("Json Error ! ", err)
+			} else {
+				hasJson = true
+			}
 		}
 
 	} else if c.Request.ContentType == "application/xml" {
@@ -51,7 +55,12 @@ func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
 				hasXml = true
 			}
 		} else {
-			//TODO check if query params are json encoded
+			err := xml.Unmarshal([]byte(c.Request.URL.RawQuery), &customParams)
+			if err != nil {
+				log.Println("Json Error ! ", err)
+			} else {
+				hasXml = true
+			}
 		}
 	}
 	// call remaiing filters
@@ -64,34 +73,22 @@ func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
 		headers[k] = strings.Join(v, " ")
 	}
 
-	log.Println("Params:")
-	if hasJson {
-		log.Printf("%#v", customParams)
-	} else if hasXml {
-		log.Printf("%#v", customParams)
-	}
-	log.Printf("Standard Params %#v", c.Params)
-
-	log.Printf("\nurl path %s", c.Request.URL.Path)
-
-	log.Println("Headers")
-	log.Printf("%#v", headers)
-
-	log.Printf("\n Status %v Response %s", w.Code, w.Body.String())
-
 	htmlValues := yaag.HtmlValueContainer{}
 
 	htmlValues.BaseLink = c.Request.URL.Host
 	htmlValues.MethodType = httpVerb
 	htmlValues.CurrentPath = c.Request.URL.Path
+	htmlValues.PostForm = make(map[string]striing)
 	for k, v := range c.Params.Form {
-		htmlValues.PostForm[k] = v
+		htmlValues.PostForm[k] = strings.Join(v, " ")
 	}
 	htmlValues.RequestBody = *body
 	htmlValues.RequestHeader = headers
+	htmlValues.RequestUrlParams = make(map[string]string)
 	for k, v := range c.Request.URL.Query() {
 		htmlValues.RequestUrlParams[k] = strings.Join(v, " ")
 	}
+	htmlValues.ResponseHeader = make(map[string]string)
 	htmlValues.ResponseBody = w.Body.String()
 	for k, v := range w.Header() {
 		htmlValues.ResponseHeader[k] = strings.Join(v, " ")
