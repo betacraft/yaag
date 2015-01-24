@@ -115,7 +115,7 @@ func readHeaders(req *http.Request) map[string]string {
 	return headers
 }
 
-func readBody(req *http.Request) *string {
+func ReadBody(req *http.Request) *string {
 	save := req.Body
 	var err error
 	if req.Body == nil {
