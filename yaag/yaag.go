@@ -172,7 +172,7 @@ func main() {
 }
 
 func GenerateHtml(htmlValue *APICall, config *Config) {
-
+	htmlValue.Id = len(ApiCallValueInstance.HtmlValues) + 1
 	ApiCallValueInstance.HtmlValues = append(ApiCallValueInstance.HtmlValues, *htmlValue)
 	t := template.New("API Documentation")
 	filePath, err := filepath.Abs(config.DocPath)
