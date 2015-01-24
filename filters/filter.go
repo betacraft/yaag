@@ -3,11 +3,11 @@ package filters
 import (
 	"encoding/json"
 	"encoding/xml"
+	"github.com/gophergala/middleware"
+	"github.com/gophergala/yaag"
 	"github.com/revel/revel"
 	"net/http/httptest"
 	"strings"
-	"yaag/middleware"
-	"yaag/yaag"
 )
 
 func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
@@ -78,9 +78,9 @@ func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
 	htmlValues.BaseLink = c.Request.URL.Host
 	htmlValues.MethodType = httpVerb
 	htmlValues.CurrentPath = c.Request.URL.Path
-	htmlValues.PostForm = make(map[string]interface{})
+	htmlValues.PostForm = make(map[string]striing)
 	for k, v := range c.Params.Form {
-		htmlValues.PostForm[k] = v
+		htmlValues.PostForm[k] = strings.Join(v, " ")
 	}
 	htmlValues.RequestBody = *body
 	htmlValues.RequestHeader = headers
