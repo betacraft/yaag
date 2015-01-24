@@ -1,7 +1,7 @@
 /*
  * This is the main core of the yaag package
  */
-package main
+package yaag
 
 import (
 	"html/template"
@@ -24,6 +24,7 @@ type HtmlValueContainer struct {
 
 	RequestBody  string
 	ResponseBody string
+	ResponseCode int
 }
 
 type ApiCallValue struct {
