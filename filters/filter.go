@@ -98,6 +98,6 @@ func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
 	apicallValue.BaseLink = c.Request.URL.Host
 	apicallValue.HtmlValues = make([]yaag.APICall, 1)
 	apicallValue.HtmlValues[0] = htmlValues
-	config := yaag.Config{Init: false, DocPath: "html/home.html"}
+	config := yaag.Config{Init: false, DocPath: "apidoc.html"}
 	yaag.GenerateHtml(&apicallValue, &config)
 }
