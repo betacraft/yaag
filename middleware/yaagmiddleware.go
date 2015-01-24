@@ -89,8 +89,8 @@ func printMap(m map[string]string) {
 
 func readPostForm(req *http.Request) map[string]string {
 	postForm := map[string]string{}
-	log.Println("", *readBody(req))
-	for _, param := range strings.Split(*readBody(req), "&") {
+	log.Println("", *ReadBody(req))
+	for _, param := range strings.Split(*ReadBody(req), "&") {
 		value := strings.Split(param, "=")
 		postForm[value[0]] = value[1]
 	}
