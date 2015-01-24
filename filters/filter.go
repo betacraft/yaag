@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"yaag/middleware"
+	"yaag/yaag"
 )
 
 func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
@@ -77,4 +78,24 @@ func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
 	log.Printf("%#v", headers)
 
 	log.Printf("\n Status %v Response %s", w.Code, w.Body.String())
+
+	htmlValues := yaag.HtmlValueContainer{}
+
+	htmlValues.BaseLink = c.Request.URL.Host
+	htmlValues.MethodType = httpVerb
+	htmlValues.CurrentPath = c.Request.URL.Path
+	for k, v := range c.Params.Form {
+		htmlValues.PostForm[k] = v
+	}
+	htmlValues.RequestBody = *body
+	htmlValues.RequestHeader = headers
+	for k, v := range c.Request.URL.Query() {
+		htmlValues.RequestUrlParams[k] = strings.Join(v, " ")
+	}
+	htmlValues.ResponseBody = w.Body.String()
+	for k, v := range w.Header() {
+		htmlValues.ResponseHeader[k] = strings.Join(v, " ")
+	}
+	htmlValues.ResponseCode = w.Code
+	yaag.GenerateHtml(&htmlValues)
 }
