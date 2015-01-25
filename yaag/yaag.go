@@ -67,7 +67,7 @@ const TEMPLATE = `<!DOCTYPE html>
     </div>
     <!-- /.container-fluid -->
 </nav>
-<div class="container" style="margin-top: 70px;">
+<div class="container" style="margin-top: 70px;margin-bottom: 100px;">
     <div class="alert alert-info">
         <p>Base URL => <strong>{{.BaseLink}}</strong></p></div>
     <hr>
@@ -76,13 +76,13 @@ const TEMPLATE = `<!DOCTYPE html>
               aria-hidden="true"></span></a> <code>{{$value.HttpVerb}}
         {{$value.Path}}</code></h4>
     {{ range $wrapperKey, $wrapperValue := $value.HtmlValues }}
-    <div id="{{mult $key $wrapperValue.Id}}next" class="container" style="margin-left:2em;">
-        <h4  style="cursor:pointer;" type="button" data-toggle="collapse" data-target="#{{mult $key $wrapperValue.Id}}container"
-            aria-expanded="false" aria-controls="collapseExample"><a class="anchor" href="#{{mult $key $wrapperValue.Id}}next"><span class="glyphicon glyphicon-link"
+    <div id="{{$wrapperValue.Id}}" class="container" style="margin-left:2em;">
+        <h4  style="cursor:pointer;" type="button" data-toggle="collapse" data-target="#{{$wrapperValue.Id}}container"
+            aria-expanded="false" aria-controls="collapseExample"><a class="anchor" href="#{{$wrapperValue.Id}}"><span class="glyphicon glyphicon-link"
                                                                         aria-hidden="true"></span></a> Example {{add $wrapperKey 1}}
         </h4>
-
-        <div class="collapse" id="{{mult $key $wrapperValue.Id}}container">
+        <hr>
+        <div class="collapse" id="{{$wrapperValue.Id}}container">
             {{ if $wrapperValue.RequestHeader }}
             <p> <H4> Request Headers </H4> </p>
             <table class="table table-bordered table-striped">
@@ -163,9 +163,14 @@ const TEMPLATE = `<!DOCTYPE html>
             {{ end }}
         </div>
     </div>
-    <hr>
     {{ end}}
     {{ end}}
+</div>
+<hr>
+<div class="container text-center" style="margin-bottom: 40px;">
+    <iframe src="https://ghbtns.com/github-btn.html?user=gophergala&repo=yaag&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
+    <iframe src="https://ghbtns.com/github-btn.html?user=gophergala&repo=yaag&type=fork&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe><br>
+    Developed by Gophers at <a href="http://rainingclouds.com">RainingClouds Inc</a>
 </div>
 </body>
 </html>`
@@ -181,6 +186,8 @@ var CommonHeaders = []string{
 	"User-Agent",
 	"X-Forwarded-For",
 }
+
+var count int
 
 type APICall struct {
 	Id int
@@ -212,37 +219,31 @@ type ApiCallValue struct {
 }
 
 type Config struct {
-	Init     bool
+	On       bool
 	DocTitle string
 	DocPath  string
 }
 
 var ApiCallValueInstance = &ApiCallValue{}
+var config *Config = &Config{On: false, DocPath: "apidoc.html", DocTitle: "YAAG"}
+
+func IsOn() bool {
+	return config.On
+}
+
+func Init(conf *Config) {
+	config = conf
+}
 
 func add(x, y int) int {
 	return x + y
 }
 
 func mult(x, y int) int {
-	return x * y
+	return (x + 1) * y
 }
 
-func main() {
-	//	firstApi := APICall{Id: 1, MethodType: "GET", CurrentPath: "/login/:id", RequestHeader: map[string]string{"Content-Type": "application/json", "Accept": "application/json"},
-
-	//		RequestBody: "{ 'main' : { 'id' : 2, 'name' : 'Gopher' }}"}
-
-	secondApi := APICall{Id: 2, MethodType: "POST", CurrentPath: "/singup", RequestHeader: map[string]string{"Content-Type": "application/json", "Accept": "application/json"},
-		ResponseBody: "{ 'main' : { 'Key' : 'ABC-123-XYZ', 'name' : 'Gopher' }}"}
-
-	config := Config{Init: false, DocPath: "html/home.html", DocTitle: "YAAG"}
-
-	//	valueArray := []APICall{secondApi, firstApi}
-	//	allApis := ApiCallValue{BaseLink: "www.google.com", HtmlValues: valueArray}
-	GenerateHtml(&secondApi, &config)
-}
-
-func GenerateHtml(htmlValue *APICall, config *Config) {
+func GenerateHtml(htmlValue *APICall) {
 	shouldAddPathSpec := true
 	log.Printf("PathSpec : %v", ApiCallValueInstance.Path)
 	for k, pathSpec := range ApiCallValueInstance.Path {
@@ -255,7 +256,8 @@ func GenerateHtml(htmlValue *APICall, config *Config) {
 				}
 			}
 			if shouldAdd {
-				htmlValue.Id = len(pathSpec.HtmlValues) + 1
+				htmlValue.Id = count
+				count += 1
 				ApiCallValueInstance.Path[k].HtmlValues = append(pathSpec.HtmlValues, *htmlValue)
 			}
 		}
@@ -266,7 +268,8 @@ func GenerateHtml(htmlValue *APICall, config *Config) {
 			HttpVerb: htmlValue.MethodType,
 			Path:     htmlValue.CurrentPath,
 		}
-		htmlValue.Id = 1
+		htmlValue.Id = count
+		count += 1
 		pathSpec.HtmlValues = append(pathSpec.HtmlValues, *htmlValue)
 		ApiCallValueInstance.Path = append(ApiCallValueInstance.Path, pathSpec)
 	}

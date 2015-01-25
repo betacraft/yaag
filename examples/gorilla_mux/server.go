@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 	"yaag/middleware"
+	"yaag/yaag"
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -14,13 +15,14 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func postHandler(w http.ResponseWriter, r *http.Request) {
-	body, _ := ioutil.ReadAll(r.Body)
+	_, _ = ioutil.ReadAll(r.Body)
 	w.WriteHeader(http.StatusOK)
 	w.Header().Add("test", "tesasasdasd")
-	fmt.Fprintf(w, string(body))
+	fmt.Fprintf(w, time.Now().String())
 }
 
 func main() {
+	yaag.Init(&yaag.Config{On: true, DocTitle: "Gorilla Mux", DocPath: "apidoc.html"})
 	r := mux.NewRouter()
 	r.HandleFunc("/", middleware.HandleFunc(handler))
 	r.HandleFunc("/testing", middleware.HandleFunc(postHandler)).Methods("POST")

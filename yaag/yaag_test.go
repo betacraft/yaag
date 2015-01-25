@@ -5,5 +5,5 @@ import (
 )
 
 func TestYaag(t *testing.T) {
-	main()
+	t.Skip(true)
 }

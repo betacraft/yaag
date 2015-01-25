@@ -16,7 +16,6 @@ YAAG is a middleware. You have to add YAAG handler in your routes and you are do
 ReadMode :  If true then YAAG middleware will function and start recording the API calls and updating the API doc
 DocPath  :  Path where the API doc will be saved
 DocTitle :  API Doc title
-BaseUrl  :  Base URL of the Endpoints
 
 ## Support
 
