@@ -72,6 +72,7 @@ func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
 
 	// get headers
 	for k, v := range c.Request.Header {
+
 		headers[k] = strings.Join(v, " ")
 	}
 
@@ -98,5 +99,5 @@ func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
 	yaag.ApiCallValueInstance.BaseLink = c.Request.Host
 
 	config := yaag.Config{Init: false, DocPath: "apidoc.html"}
-	yaag.GenerateHtml(&htmlValues, &config)
+	go yaag.GenerateHtml(&htmlValues, &config)
 }

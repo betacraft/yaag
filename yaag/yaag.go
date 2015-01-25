@@ -172,6 +172,18 @@ const TEMPLATE = `<!DOCTYPE html>
 </body>
 </html>`
 
+var CommonHeaders = []string{
+	"Accept",
+	"Accept-Encoding",
+	"Accept-Language",
+	"Cache-Control",
+	"Content-Length",
+	"Content-Type",
+	"Origin",
+	"User-Agent",
+	"X-Forwarded-For",
+}
+
 type APICall struct {
 	Id int
 
@@ -180,9 +192,10 @@ type APICall struct {
 
 	PostForm map[string]string
 
-	RequestHeader    map[string]string
-	ResponseHeader   map[string]string
-	RequestUrlParams map[string]string
+	RequestHeader        map[string]string
+	CommonRequestHeaders map[string]string
+	ResponseHeader       map[string]string
+	RequestUrlParams     map[string]string
 
 	RequestBody  string
 	ResponseBody string
@@ -209,7 +222,6 @@ type Config struct {
 var ApiCallValueInstance = &ApiCallValue{}
 
 func main() {
-
 	//	firstApi := APICall{Id: 1, MethodType: "GET", CurrentPath: "/login/:id", RequestHeader: map[string]string{"Content-Type": "application/json", "Accept": "application/json"},
 
 	//		RequestBody: "{ 'main' : { 'id' : 2, 'name' : 'Gopher' }}"}
