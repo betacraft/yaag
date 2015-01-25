@@ -17,11 +17,48 @@ ReadMode :  If true then YAAG middleware will function and start recording the A
 DocPath  :  Path where the API doc will be saved
 DocTitle :  API Doc title
 
-## Support
+## How to use with basic net.http package
 
-It's a middleware supporting http.Handler interface. So it will support all the frameworks that support Handler like martini, Gorilla Mux etc. 
-YAAG also supports revel framework.
-YAAG also supports gin framework.
+1. Import github.com/gophergala/yaag/yaag
+2. Import github.com/gophergala/yaag/middleware
+3. Initialize yaag ```yaag.Init(&yaag.Config{On: true, DocTitle: "Core", DocPath: "apidoc.html"})```
+4. Use it in your handlers as ```http.HandleFunc("/", middleware.HandleFunc(handler))```
+
+Sample code
+
+```
+func handler(w http.ResponseWriter, r *http.Request) {
+  fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
+}
+
+func main() {
+  yaag.Init(&yaag.Config{On: true, DocTitle: "Core", DocPath: "apidoc.html"})
+  http.HandleFunc("/", middleware.HandleFunc(handler))
+  http.ListenAndServe(":8080", nil)
+}
+```
+
+## How to use with Gorilla Mux
+1. Import github.com/gophergala/yaag/yaag
+2. Import github.com/gophergala/yaag/middleware
+3. Initialize yaag ```yaag.Init(&yaag.Config{On: true, DocTitle: "Core", DocPath: "apidoc.html"})```
+4. Use it in your handlers as ```r.HandleFunc("/", middleware.HandleFunc(handler))```
+
+Sample code
+
+```
+func handler(w http.ResponseWriter, r *http.Request) {
+  fmt.Fprintf(w, time.Now().String())
+}
+
+func main() {
+  yaag.Init(&yaag.Config{On: true, DocTitle: "Gorilla Mux", DocPath: "apidoc.html"})
+  r := mux.NewRouter()
+  r.HandleFunc("/", middleware.HandleFunc(handler)) 
+  http.ListenAndServe(":8080", r)
+}
+```
+
 
 ## How to use with Revel
 

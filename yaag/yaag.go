@@ -67,7 +67,7 @@ const TEMPLATE = `<!DOCTYPE html>
     </div>
     <!-- /.container-fluid -->
 </nav>
-<div class="container" style="margin-top: 70px;margin-bottom: 100px;">
+<div class="container" style="margin-top: 70px;margin-bottom: 20px;">
     <div class="alert alert-info">
         <p>Base URL => <strong>{{.BaseLink}}</strong></p></div>
     <hr>
@@ -161,15 +161,14 @@ const TEMPLATE = `<!DOCTYPE html>
             <p> <H4> Response Body </H4> </p>
             <pre class="prettyprint lang-json">{{ $wrapperValue.ResponseBody }}</pre>
             {{ end }}
+            <hr>
         </div>
-    </div>
+    </div>    
     {{ end}}
     {{ end}}
+    <hr>
 </div>
-<hr>
 <div class="container text-center" style="margin-bottom: 40px;">
-    <iframe src="https://ghbtns.com/github-btn.html?user=gophergala&repo=yaag&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
-    <iframe src="https://ghbtns.com/github-btn.html?user=gophergala&repo=yaag&type=fork&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe><br>
     Developed by Gophers at <a href="http://rainingclouds.com">RainingClouds Inc</a>
 </div>
 </body>
@@ -258,6 +257,7 @@ func GenerateHtml(htmlValue *APICall) {
 			if shouldAdd {
 				htmlValue.Id = count
 				count += 1
+				deleteCommonHeaders(htmlValue)
 				ApiCallValueInstance.Path[k].HtmlValues = append(pathSpec.HtmlValues, *htmlValue)
 			}
 		}
@@ -270,6 +270,7 @@ func GenerateHtml(htmlValue *APICall) {
 		}
 		htmlValue.Id = count
 		count += 1
+		deleteCommonHeaders(htmlValue)
 		pathSpec.HtmlValues = append(pathSpec.HtmlValues, *htmlValue)
 		ApiCallValueInstance.Path = append(ApiCallValueInstance.Path, pathSpec)
 	}
@@ -293,4 +294,15 @@ func GenerateHtml(htmlValue *APICall) {
 	homeWriter := io.Writer(homeHtmlFile)
 	t.Execute(homeWriter, map[string]interface{}{"array": ApiCallValueInstance.Path,
 		"BaseLink": ApiCallValueInstance.BaseLink, "Title": config.DocTitle})
+}
+
+func deleteCommonHeaders(call *APICall) {
+	delete(call.RequestHeader, "Accept")
+	delete(call.RequestHeader, "Accept-Encoding")
+	delete(call.RequestHeader, "Accept-Language")
+	delete(call.RequestHeader, "Cache-Control")
+	delete(call.RequestHeader, "Connection")
+	delete(call.RequestHeader, "Cookie")
+	delete(call.RequestHeader, "Origin")
+	delete(call.RequestHeader, "User-Agent")
 }

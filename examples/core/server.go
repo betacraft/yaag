@@ -26,7 +26,7 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	yaag.Init(&yaag.Config{On: true, DocTitle: "Gorilla Mux", DocPath: "apidoc.html"})
+	yaag.Init(&yaag.Config{On: true, DocTitle: "Core", DocPath: "apidoc.html"})
 	http.HandleFunc("/", middleware.HandleFunc(handler))
 	http.HandleFunc("/say_it", middleware.HandleFunc(postHandler))
 	http.ListenAndServe(":8080", nil)

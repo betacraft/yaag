@@ -54,7 +54,7 @@
     </div>
     <!-- /.container-fluid -->
 </nav>
-<div class="container" style="margin-top: 70px;margin-bottom: 100px;">
+<div class="container" style="margin-top: 70px;margin-bottom: 20px;">
     <div class="alert alert-info">
         <p>Base URL => <strong>{{.BaseLink}}</strong></p></div>
     <hr>
@@ -143,11 +143,11 @@
             </table>
             {{ end }}
 
-
             {{ if $wrapperValue.ResponseBody }}
             <p> <H4> Response Body </H4> </p>
             <pre class="prettyprint lang-json">{{ $wrapperValue.ResponseBody }}</pre>
             {{ end }}
+            <hr>
         </div>
     </div>
     {{ end}}
@@ -155,8 +155,6 @@
 </div>
 <hr>
 <div class="container text-center" style="margin-bottom: 40px;">
-    <iframe src="https://ghbtns.com/github-btn.html?user=gophergala&repo=yaag&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
-    <iframe src="https://ghbtns.com/github-btn.html?user=gophergala&repo=yaag&type=fork&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe><br>
     Developed by Gophers at <a href="http://rainingclouds.com">RainingClouds Inc</a>
 </div>
 </body>

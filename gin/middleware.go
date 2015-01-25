@@ -17,7 +17,7 @@ func Document() gin.HandlerFunc {
 		if writer.Code != 404 {
 			apiCall.MethodType = c.Request.Method
 			apiCall.CurrentPath = strings.Split(c.Request.RequestURI, "?")[0]
-			apiCall.ResponseBody = ""
+			apiCall.ResponseBody = ''
 			apiCall.ResponseCode = c.Writer.Status()
 			headers := map[string]string{}
 			for k, v := range c.Writer.Header() {
