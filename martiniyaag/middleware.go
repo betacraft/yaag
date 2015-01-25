@@ -2,10 +2,10 @@ package martiniyaag
 
 import (
 	"github.com/go-martini/martini"
+	"github.com/gophergala/yaag/middleware"
+	"github.com/gophergala/yaag/yaag"
 	"net/http"
 	"net/http/httptest"
-	"yaag/middleware"
-	"yaag/yaag"
 )
 
 func Document(c martini.Context, w http.ResponseWriter, r *http.Request) {
@@ -16,7 +16,7 @@ func Document(c martini.Context, w http.ResponseWriter, r *http.Request) {
 	apiCall := yaag.APICall{}
 	writer := httptest.NewRecorder()
 	c.MapTo(writer, (*http.ResponseWriter)(nil))
-	middleware.Before(&apiCall, r)
+	middleware.Before(apiCall, r)
 	c.Next()
-	middleware.After(&apiCall, writer, w, r)
+	middleware.After(apiCall, writer, w, r)
 }

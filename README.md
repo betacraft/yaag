@@ -85,7 +85,7 @@ func main() {
 
 ## Adding Support for
 
-1. Gin framework support
+1. Gin framework
 
 ## Team
 

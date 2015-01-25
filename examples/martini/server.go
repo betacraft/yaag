@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/go-martini/martini"
-	"yaag/martiniyaag"
-	"yaag/yaag"
+	"github.com/gophergala/yaag/martiniyaag"
+	"github.com/gophergala/yaag/yaag"
 )
 
 func main() {

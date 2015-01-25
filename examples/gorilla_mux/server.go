@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
+	"github.com/gophergala/yaag/middleware"
+	"github.com/gophergala/yaag/yaag"
 	"github.com/gorilla/mux"
 	"io/ioutil"
 	"net/http"
 	"time"
-	"yaag/middleware"
-	"yaag/yaag"
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
