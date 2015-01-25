@@ -76,14 +76,13 @@ const TEMPLATE = `<!DOCTYPE html>
               aria-hidden="true"></span></a> <code>{{$value.HttpVerb}}
         {{$value.Path}}</code></h4>
     {{ range $wrapperKey, $wrapperValue := $value.HtmlValues }}
-    <div  class="container" style="margin-left:2em;">
-        <h4 id="{{$wrapperKey}}next" style="cursor:pointer;" type="button" data-toggle="collapse" data-target="#{{$wrapperValue.Id}}"
+    <div id="{{$key}}next" class="container" style="margin-left:2em;">
+        <h4  style="cursor:pointer;" type="button" data-toggle="collapse" data-target="#{{$key}}container"
             aria-expanded="false" aria-controls="collapseExample"><a class="anchor" href="#{{$key}}next"><span class="glyphicon glyphicon-link"
-                                                                        aria-hidden="true"></span></a> <code>{{$wrapperValue.MethodType}}
-            {{$wrapperValue.CurrentPath}}</code>
+                                                                        aria-hidden="true"></span></a> Example {{add $wrapperKey 1}}
         </h4>
 
-        <div class="collapse" id="{{$wrapperValue.Id}}">
+        <div class="collapse" id="{{$key}}container">
             {{ if $wrapperValue.RequestHeader }}
             <p> <H4> Request Headers </H4> </p>
             <table class="table table-bordered table-striped">
@@ -220,6 +219,10 @@ type Config struct {
 
 var ApiCallValueInstance = &ApiCallValue{}
 
+func add(x, y int) int {
+	return x + y
+}
+
 func main() {
 	//	firstApi := APICall{Id: 1, MethodType: "GET", CurrentPath: "/login/:id", RequestHeader: map[string]string{"Content-Type": "application/json", "Accept": "application/json"},
 
@@ -261,10 +264,11 @@ func GenerateHtml(htmlValue *APICall, config *Config) {
 		pathSpec.HtmlValues = append(pathSpec.HtmlValues, *htmlValue)
 		ApiCallValueInstance.Path = append(ApiCallValueInstance.Path, pathSpec)
 	}
-
-	t := template.New("API Documentation")
+	funcs := template.FuncMap{"add": add}
+	t := template.New("API Documentation").Funcs(funcs)
 	filePath, err := filepath.Abs(config.DocPath)
 	htmlString := TEMPLATE
+
 	t, err = t.Parse(htmlString)
 	if err != nil {
 		log.Println(err)

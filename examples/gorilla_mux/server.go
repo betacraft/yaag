@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/gorilla/mux"
 	"io/ioutil"
 	"net/http"
-	"strings"
 	"yaag/middleware"
 )
 
@@ -13,11 +13,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func postHandler(w http.ResponseWriter, r *http.Request) {
-	if !strings.EqualFold(r.Method, "POST") {
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("Illegal request"))
-		return
-	}
 	body, _ := ioutil.ReadAll(r.Body)
 	w.WriteHeader(http.StatusOK)
 	w.Header().Add("test", "tesasasdasd")
@@ -25,7 +20,8 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/", middleware.HandleFunc(handler))
-	http.HandleFunc("/say_it", middleware.HandleFunc(postHandler))
-	http.ListenAndServe(":8080", nil)
+	r := mux.NewRouter()
+	r.HandleFunc("/", middleware.HandleFunc(handler))
+	r.HandleFunc("/testing", middleware.HandleFunc(postHandler)).Methods("POST")
+	http.ListenAndServe(":8080", r)
 }
