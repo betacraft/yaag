@@ -9,7 +9,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 const TEMPLATE = `<!DOCTYPE html>
@@ -73,14 +72,14 @@ const TEMPLATE = `<!DOCTYPE html>
         <p>Base URL => <strong>{{.BaseLink}}</strong></p></div>
     <hr>
     {{ range $key, $value := .array }}
-    <h4><span class="glyphicon glyphicon-link"
-              aria-hidden="true"></span> <code>{{$value.HttpVerb}}
+    <h4 id="{{$key}}top"><a class="anchor" href="#{{$key}}top"><span class="glyphicon glyphicon-link"
+              aria-hidden="true"></span></a> <code>{{$value.HttpVerb}}
         {{$value.Path}}</code></h4>
     {{ range $wrapperKey, $wrapperValue := $value.HtmlValues }}
-    <div class="container" style="margin-left:2em;">
-        <h4 style="cursor:pointer;" type="button" data-toggle="collapse" data-target="#{{$wrapperValue.Id}}"
-            aria-expanded="false" aria-controls="collapseExample"><span class="glyphicon glyphicon-link"
-                                                                        aria-hidden="true"></span> <code>{{$wrapperValue.MethodType}}
+    <div  class="container" style="margin-left:2em;">
+        <h4 id="{{$wrapperKey}}next" style="cursor:pointer;" type="button" data-toggle="collapse" data-target="#{{$wrapperValue.Id}}"
+            aria-expanded="false" aria-controls="collapseExample"><a class="anchor" href="#{{$key}}next"><span class="glyphicon glyphicon-link"
+                                                                        aria-hidden="true"></span></a> <code>{{$wrapperValue.MethodType}}
             {{$wrapperValue.CurrentPath}}</code>
         </h4>
 
@@ -258,7 +257,7 @@ func GenerateHtml(htmlValue *APICall, config *Config) {
 	if shouldAddPathSpec {
 		pathSpec := PathSpec{
 			HttpVerb: htmlValue.MethodType,
-			Path:     strings.Split(htmlValue.CurrentPath, "?")[0],
+			Path:     htmlValue.CurrentPath,
 		}
 		pathSpec.HtmlValues = append(pathSpec.HtmlValues, *htmlValue)
 		ApiCallValueInstance.Path = append(ApiCallValueInstance.Path, pathSpec)
