@@ -16,7 +16,9 @@ const TEMPLATE = `<!DOCTYPE html>
 <head lang="en">
     <title> API Documentation </title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <script src="http://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
     <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.css">
     <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
@@ -27,6 +29,15 @@ const TEMPLATE = `<!DOCTYPE html>
             font-family: 'Roboto', sans-serif;
         }
     </style>
+    <style type="text/css">
+        pre.prettyprint {
+            border: 1px solid #ccc;
+            margin-bottom: 0;
+            padding: 9.5px;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
 <nav class="navbar navbar-default navbar-fixed-top">
@@ -87,36 +98,65 @@ const TEMPLATE = `<!DOCTYPE html>
 
         {{ if $wrapperValue.PostForm }}
         <p> <H4> Post Form </H4> </p>
-        {{ range $key, $value := $wrapperValue.PostForm }}
-        <li><strong>{{ $key }}</strong>: {{ $value }}</li>
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th>Key</th>
+                <th>Value</th>
+            </tr>
+            {{ range $key, $value := $wrapperValue.PostForm }}
+            <tr>
+                <td>{{ $key }}</td>
+                <td> {{ $value }}</td>
+            </tr>
+            {{ end }}
+        </table>
         {{ end }}
-        {{ end }}
+
 
         {{ if $wrapperValue.RequestUrlParams }}
         <p> <H4> URL Params </H4> </p>
-        {{ range $key, $value := $wrapperValue.RequestUrlParams }}
-        <li><strong>{{ $key }}</strong>: {{ $value }}</li>
-        {{ end }}
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th>Key</th>
+                <th>Value</th>
+            </tr>
+            {{ range $key, $value := $wrapperValue.RequestUrlParams }}
+            <tr>
+                <td>{{ $key }}</td>
+                <td> {{ $value }}</td>
+            </tr>
+            {{ end }}
+        </table>
         {{ end }}
 
         {{ if $wrapperValue.RequestBody }}
         <p> <H4> Request Body </H4> </p>
-        <pre> {{ $wrapperValue.RequestBody }} </pre>
+        <pre class="prettyprint lang-json">{{ $wrapperValue.RequestBody }}</pre>
         {{ end }}
 
         <p><h4> Response Code</h4></p>
-        <pre>{{ $wrapperValue.ResponseCode }}</pre>
+        <pre class="prettyprint lang-json">{{ $wrapperValue.ResponseCode }}</pre>
 
         {{ if $wrapperValue.ResponseHeader }}
-        <p> <H4> Response Headers </H4> </p>
-        {{ range $key, $value := $wrapperValue.ResponseHeader }}
-        <li><strong>{{ $key }}</strong>: {{ $value }}</li>
+        <p><h4> Response Headers</h4></p>
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th>Key</th>
+                <th>Value</th>
+            </tr>
+            {{ range $key, $value := $wrapperValue.ResponseHeader }}
+            <tr>
+                <td>{{ $key }}</td>
+                <td> {{ $value }}</td>
+            </tr>
+            {{ end }}
+        </table>
         {{ end }}
-        {{ end }}
+
 
         {{ if $wrapperValue.ResponseBody }}
         <p> <H4> Response Body </H4> </p>
-        <pre> {{ $wrapperValue.ResponseBody }} </pre>
+        <pre class="prettyprint lang-json">{{ $wrapperValue.ResponseBody }}</pre>
         {{ end }}
     </div>
     <hr>
@@ -176,11 +216,6 @@ func GenerateHtml(htmlValue *APICall, config *Config) {
 	ApiCallValueInstance.HtmlValues = append(ApiCallValueInstance.HtmlValues, *htmlValue)
 	t := template.New("API Documentation")
 	filePath, err := filepath.Abs(config.DocPath)
-	// file, err := ioutil.ReadFile("templates/main.html")
-	// if err != nil {
-	// 	log.Println(err)
-	// 	return
-	// }
 	htmlString := TEMPLATE
 	t, err = t.Parse(htmlString)
 	if err != nil {

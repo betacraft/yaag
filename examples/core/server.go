@@ -19,7 +19,9 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	body, _ := ioutil.ReadAll(r.Body)
-	fmt.Fprintf(w, "Yaag is awesome", string(body))
+	w.WriteHeader(http.StatusOK)
+	w.Header().Add("test", "tesasasdasd")
+	fmt.Fprintf(w, string(body))
 }
 
 func main() {
