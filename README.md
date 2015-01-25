@@ -11,11 +11,6 @@ Most of the web services expose their APIs to the mobile or third party develope
 YAAG is a middleware. You have to add YAAG handler in your routes and you are done. Just go on calling your APIs using POSTMAN, Curl or from any client, and YAAG will keep on updating the API Doc html. 
 
 
-### Config parameters 
-
-ReadMode :  If true then YAAG middleware will function and start recording the API calls and updating the API doc
-DocPath  :  Path where the API doc will be saved
-DocTitle :  API Doc title
 
 ## How to use with basic net.http package
 
@@ -26,7 +21,7 @@ DocTitle :  API Doc title
 
 Sample code
 
-```
+```go
 func handler(w http.ResponseWriter, r *http.Request) {
   fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
 }
@@ -46,7 +41,7 @@ func main() {
 
 Sample code
 
-```
+```go
 func handler(w http.ResponseWriter, r *http.Request) {
   fmt.Fprintf(w, time.Now().String())
 }
@@ -68,10 +63,13 @@ func main() {
 4. Start recording Api calls
 
 
+## Adding 
+1. Gin framework support
+
 ## Team
 
-Aniket Awati (aniket@rainingclouds.com)
-Akshay Deo (akshay@rainingclouds.com)
-Kaustubh Deshmukh (kaustubh@rainingclouds.com)
+* Aniket Awati (aniket@rainingclouds.com)
+* Akshay Deo (akshay@rainingclouds.com)
+* Kaustubh Deshmukh (kaustubh@rainingclouds.com)
 
 This project is initiated by RainingClouds Inc during GopherGala 2015.
