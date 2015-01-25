@@ -83,6 +83,13 @@ func main() {
 4. Start recording Api calls
 
 
+## Screenshots
+
+### API doc is generated based on the paths
+![alt first](https://raw.github.com/gophergala/yaag/master/1.png)
+### Click on any call to see the details of the API
+![alt second](https://raw.github.com/gophergala/yaag/master/2.png)
+
 ## Adding Support for
 
 1. Gin framework
