@@ -259,6 +259,7 @@ func GenerateHtml(htmlValue *APICall, config *Config) {
 			HttpVerb: htmlValue.MethodType,
 			Path:     htmlValue.CurrentPath,
 		}
+		htmlValue.Id = 1
 		pathSpec.HtmlValues = append(pathSpec.HtmlValues, *htmlValue)
 		ApiCallValueInstance.Path = append(ApiCallValueInstance.Path, pathSpec)
 	}
