@@ -11,7 +11,6 @@ Most of the web services expose their APIs to the mobile or third party develope
 YAAG is a middleware. You have to add YAAG handler in your routes and you are done. Just go on calling your APIs using POSTMAN, Curl or from any client, and YAAG will keep on updating the API Doc html. 
 
 
-
 ## How to use with basic net.http package
 
 1. Import github.com/gophergala/yaag/yaag
@@ -19,7 +18,7 @@ YAAG is a middleware. You have to add YAAG handler in your routes and you are do
 3. Initialize yaag ```yaag.Init(&yaag.Config{On: true, DocTitle: "Core", DocPath: "apidoc.html"})```
 4. Use it in your handlers as ```http.HandleFunc("/", middleware.HandleFunc(handler))```
 
-Sample code
+####Sample code
 
 ```go
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -39,7 +38,7 @@ func main() {
 3. Initialize yaag ```yaag.Init(&yaag.Config{On: true, DocTitle: "Core", DocPath: "apidoc.html"})```
 4. Use it in your handlers as ```r.HandleFunc("/", middleware.HandleFunc(handler))```
 
-Sample code
+####Sample code
 
 ```go
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -54,6 +53,27 @@ func main() {
 }
 ```
 
+## How to use with Martini
+
+1. Import github.com/gophergala/yaag/yaag
+2. Import github.com/gophergala/yaag/martiniyaag
+3. Initialize yaag ```yaag.Init(&yaag.Config{On: true, DocTitle: "Core", DocPath: "apidoc.html"})```
+4. Add Yaag middleware like ```m.Use(martiniyaag.Document)```
+
+####Sample Code
+
+```go
+func main() {
+  yaag.Init(&yaag.Config{On: true, DocTitle: "Gorilla Mux", DocPath: "apidoc.html"})
+  m := martini.Classic()
+  m.Use(martiniyaag.Document)
+  m.Get("/", func() string {
+    return "Hello world!"
+  })
+  m.Run()
+}
+```
+
 
 ## How to use with Revel
 
@@ -63,7 +83,8 @@ func main() {
 4. Start recording Api calls
 
 
-## Adding 
+## Adding Support for
+
 1. Gin framework support
 
 ## Team

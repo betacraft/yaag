@@ -47,7 +47,7 @@ func (y *YaagHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	apiCall := yaag.APICall{}
 	Before(&apiCall, r)
 	y.next(writer, r)
-	after(&apiCall, writer, w, r)
+	After(&apiCall, writer, w, r)
 }
 
 func HandleFunc(next func(http.ResponseWriter, *http.Request)) func(http.ResponseWriter, *http.Request) {
@@ -60,7 +60,7 @@ func HandleFunc(next func(http.ResponseWriter, *http.Request)) func(http.Respons
 		writer := httptest.NewRecorder()
 		Before(&apiCall, r)
 		next(writer, r)
-		after(&apiCall, writer, w, r)
+		After(&apiCall, writer, w, r)
 	}
 }
 
@@ -170,7 +170,7 @@ func ReadBody(req *http.Request) *string {
 	return &body
 }
 
-func after(apiCall *yaag.APICall, writer *httptest.ResponseRecorder, w http.ResponseWriter, r *http.Request) {
+func After(apiCall *yaag.APICall, writer *httptest.ResponseRecorder, w http.ResponseWriter, r *http.Request) {
 	if strings.Contains(r.RequestURI, ".ico") {
 		fmt.Fprintf(w, writer.Body.String())
 		return

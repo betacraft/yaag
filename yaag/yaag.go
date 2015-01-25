@@ -165,8 +165,7 @@ const TEMPLATE = `<!DOCTYPE html>
         </div>
     </div>    
     {{ end}}
-    {{ end}}
-    <hr>
+    {{ end}}    
 </div>
 <div class="container text-center" style="margin-bottom: 40px;">
     Developed by Gophers at <a href="http://rainingclouds.com">RainingClouds Inc</a>
