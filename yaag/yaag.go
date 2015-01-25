@@ -142,9 +142,15 @@ type APICall struct {
 	ResponseCode int
 }
 
-type ApiCallValue struct {
-	BaseLink   string
+type PathSpec struct {
+	HttpVerb   string
+	Path       string
 	HtmlValues []APICall
+}
+
+type ApiCallValue struct {
+	BaseLink string
+	Path     []PathSpec
 }
 
 type Config struct {
@@ -172,8 +178,32 @@ func main() {
 }
 
 func GenerateHtml(htmlValue *APICall, config *Config) {
-	htmlValue.Id = len(ApiCallValueInstance.HtmlValues) + 1
-	ApiCallValueInstance.HtmlValues = append(ApiCallValueInstance.HtmlValues, *htmlValue)
+	shouldAddPathSpec := true
+	for _, pathSpec := range ApiCallValueInstance.Path {
+		if pathSpec.Path == htmlValue.CurrentPath && pathSpec.HttpVerb == htmlValue.MethodType {
+			shouldAddPathSpec = false
+			shouldAdd := true
+			for _, value := range pathSpec.HtmlValues {
+				if value.ResponseBody == htmlValue.ResponseBody {
+					shouldAdd = false
+				}
+			}
+			if shouldAdd {
+				htmlValue.Id = len(pathSpec.HtmlValues) + 1
+				pathSpec.HtmlValues = append(pathSpec.HtmlValues, *htmlValue)
+			}
+		}
+	}
+
+	if shouldAddPathSpec {
+		pathSpec := PathSpec{
+			HttpVerb: htmlValue.MethodType,
+			Path:     htmlValue.CurrentPath,
+		}
+		pathSpec.HtmlValues = append(pathSpec.HtmlValues, *htmlValue)
+		ApiCallValueInstance.Path = append(ApiCallValueInstance.Path, pathSpec)
+	}
+
 	t := template.New("API Documentation")
 	filePath, err := filepath.Abs(config.DocPath)
 	// file, err := ioutil.ReadFile("templates/main.html")
@@ -195,6 +225,6 @@ func GenerateHtml(htmlValue *APICall, config *Config) {
 		return
 	}
 	homeWriter := io.Writer(homeHtmlFile)
-	t.Execute(homeWriter, map[string]interface{}{"array": ApiCallValueInstance.HtmlValues,
+	t.Execute(homeWriter, map[string]interface{}{"array": ApiCallValueInstance.Path[0].HtmlValues,
 		"BaseLink": ApiCallValueInstance.BaseLink, "Title": config.DocTitle})
 }
