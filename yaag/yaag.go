@@ -238,7 +238,7 @@ func main() {
 func GenerateHtml(htmlValue *APICall, config *Config) {
 	shouldAddPathSpec := true
 	log.Printf("PathSpec : %v", ApiCallValueInstance.Path)
-	for _, pathSpec := range ApiCallValueInstance.Path {
+	for k, pathSpec := range ApiCallValueInstance.Path {
 		if pathSpec.Path == htmlValue.CurrentPath && pathSpec.HttpVerb == htmlValue.MethodType {
 			shouldAddPathSpec = false
 			shouldAdd := true
@@ -249,7 +249,7 @@ func GenerateHtml(htmlValue *APICall, config *Config) {
 			}
 			if shouldAdd {
 				htmlValue.Id = len(pathSpec.HtmlValues) + 1
-				pathSpec.HtmlValues = append(pathSpec.HtmlValues, *htmlValue)
+				ApiCallValueInstance.Path[k].HtmlValues = append(pathSpec.HtmlValues, *htmlValue)
 			}
 		}
 	}
