@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 const TEMPLATE = `<!DOCTYPE html>
@@ -69,97 +70,103 @@ const TEMPLATE = `<!DOCTYPE html>
 </nav>
 <div class="container" style="margin-top: 70px;">
     <div class="alert alert-info">
-    <p>Base URL => <strong>{{.BaseLink}}</strong></p></div>
+        <p>Base URL => <strong>{{.BaseLink}}</strong></p></div>
     <hr>
-    {{ range $wrapperKey, $wrapperValue := .array }}
+    {{ range $key, $value := .array }}
+    <h4><span class="glyphicon glyphicon-link"
+              aria-hidden="true"></span> <code>{{$value.HttpVerb}}
+        {{$value.Path}}</code></h4>
+    {{ range $wrapperKey, $wrapperValue := $value.HtmlValues }}
+    <div class="container" style="margin-left:2em;">
+        <h4 style="cursor:pointer;" type="button" data-toggle="collapse" data-target="#{{$wrapperValue.Id}}"
+            aria-expanded="false" aria-controls="collapseExample"><span class="glyphicon glyphicon-link"
+                                                                        aria-hidden="true"></span> <code>{{$wrapperValue.MethodType}}
+            {{$wrapperValue.CurrentPath}}</code>
+        </h4>
 
-    <h4 style="cursor:pointer;" type="button" data-toggle="collapse" data-target="#{{$wrapperValue.Id}}"
-        aria-expanded="false" aria-controls="collapseExample"><span class="glyphicon glyphicon-link"
-                                                                    aria-hidden="true"></span> <code>{{$wrapperValue.MethodType}}
-        {{$wrapperValue.CurrentPath}}</code>
-    </h4>
-
-    <div class="collapse" id="{{$wrapperValue.Id}}">
-        {{ if $wrapperValue.RequestHeader }}
-        <p> <H4> Request Headers </H4> </p>
-        <table class="table table-bordered table-striped">
-            <tr>
-                <th>Key</th>
-                <th>Value</th>
-            </tr>
-            {{ range $key, $value := $wrapperValue.RequestHeader }}
-            <tr>
-                <td>{{ $key }}</td>
-                <td> {{ $value }}</td>
-            </tr>
+        <div class="collapse" id="{{$wrapperValue.Id}}">
+            {{ if $wrapperValue.RequestHeader }}
+            <p> <H4> Request Headers </H4> </p>
+            <table class="table table-bordered table-striped">
+                <tr>
+                    <th>Key</th>
+                    <th>Value</th>
+                </tr>
+                {{ range $key, $value := $wrapperValue.RequestHeader }}
+                <tr>
+                    <td>{{ $key }}</td>
+                    <td> {{ $value }}</td>
+                </tr>
+                {{ end }}
+            </table>
             {{ end }}
-        </table>
-        {{ end }}
 
-        {{ if $wrapperValue.PostForm }}
-        <p> <H4> Post Form </H4> </p>
-        <table class="table table-bordered table-striped">
-            <tr>
-                <th>Key</th>
-                <th>Value</th>
-            </tr>
-            {{ range $key, $value := $wrapperValue.PostForm }}
-            <tr>
-                <td>{{ $key }}</td>
-                <td> {{ $value }}</td>
-            </tr>
+            {{ if $wrapperValue.PostForm }}
+            <p> <H4> Post Form </H4> </p>
+            <table class="table table-bordered table-striped">
+                <tr>
+                    <th>Key</th>
+                    <th>Value</th>
+                </tr>
+                {{ range $key, $value := $wrapperValue.PostForm }}
+                <tr>
+                    <td>{{ $key }}</td>
+                    <td> {{ $value }}</td>
+                </tr>
+                {{ end }}
+            </table>
             {{ end }}
-        </table>
-        {{ end }}
 
 
-        {{ if $wrapperValue.RequestUrlParams }}
-        <p> <H4> URL Params </H4> </p>
-        <table class="table table-bordered table-striped">
-            <tr>
-                <th>Key</th>
-                <th>Value</th>
-            </tr>
-            {{ range $key, $value := $wrapperValue.RequestUrlParams }}
-            <tr>
-                <td>{{ $key }}</td>
-                <td> {{ $value }}</td>
-            </tr>
+            {{ if $wrapperValue.RequestUrlParams }}
+            <p> <H4> URL Params </H4> </p>
+            <table class="table table-bordered table-striped">
+                <tr>
+                    <th>Key</th>
+                    <th>Value</th>
+                </tr>
+                {{ range $key, $value := $wrapperValue.RequestUrlParams }}
+                <tr>
+                    <td>{{ $key }}</td>
+                    <td> {{ $value }}</td>
+                </tr>
+                {{ end }}
+            </table>
             {{ end }}
-        </table>
-        {{ end }}
 
-        {{ if $wrapperValue.RequestBody }}
-        <p> <H4> Request Body </H4> </p>
-        <pre class="prettyprint lang-json">{{ $wrapperValue.RequestBody }}</pre>
-        {{ end }}
-
-        <p><h4> Response Code</h4></p>
-        <pre class="prettyprint lang-json">{{ $wrapperValue.ResponseCode }}</pre>
-
-        {{ if $wrapperValue.ResponseHeader }}
-        <p><h4> Response Headers</h4></p>
-        <table class="table table-bordered table-striped">
-            <tr>
-                <th>Key</th>
-                <th>Value</th>
-            </tr>
-            {{ range $key, $value := $wrapperValue.ResponseHeader }}
-            <tr>
-                <td>{{ $key }}</td>
-                <td> {{ $value }}</td>
-            </tr>
+            {{ if $wrapperValue.RequestBody }}
+            <p> <H4> Request Body </H4> </p>
+            <pre class="prettyprint lang-json">{{ $wrapperValue.RequestBody }}</pre>
             {{ end }}
-        </table>
-        {{ end }}
+
+            <p><h4> Response Code</h4></p>
+            <pre class="prettyprint lang-json">{{ $wrapperValue.ResponseCode }}</pre>
+
+            {{ if $wrapperValue.ResponseHeader }}
+            <p><h4> Response Headers</h4></p>
+            <table class="table table-bordered table-striped">
+                <tr>
+                    <th>Key</th>
+                    <th>Value</th>
+                </tr>
+                {{ range $key, $value := $wrapperValue.ResponseHeader }}
+                <tr>
+                    <td>{{ $key }}</td>
+                    <td> {{ $value }}</td>
+                </tr>
+                {{ end }}
+            </table>
+            {{ end }}
 
 
-        {{ if $wrapperValue.ResponseBody }}
-        <p> <H4> Response Body </H4> </p>
-        <pre class="prettyprint lang-json">{{ $wrapperValue.ResponseBody }}</pre>
-        {{ end }}
+            {{ if $wrapperValue.ResponseBody }}
+            <p> <H4> Response Body </H4> </p>
+            <pre class="prettyprint lang-json">{{ $wrapperValue.ResponseBody }}</pre>
+            {{ end }}
+        </div>
     </div>
     <hr>
+    {{ end}}
     {{ end}}
 </div>
 </body>
@@ -238,7 +245,7 @@ func GenerateHtml(htmlValue *APICall, config *Config) {
 	if shouldAddPathSpec {
 		pathSpec := PathSpec{
 			HttpVerb: htmlValue.MethodType,
-			Path:     htmlValue.CurrentPath,
+			Path:     strings.Split(htmlValue.CurrentPath, "?")[0],
 		}
 		pathSpec.HtmlValues = append(pathSpec.HtmlValues, *htmlValue)
 		ApiCallValueInstance.Path = append(ApiCallValueInstance.Path, pathSpec)
@@ -260,6 +267,6 @@ func GenerateHtml(htmlValue *APICall, config *Config) {
 		return
 	}
 	homeWriter := io.Writer(homeHtmlFile)
-	t.Execute(homeWriter, map[string]interface{}{"array": ApiCallValueInstance.Path[0].HtmlValues,
+	t.Execute(homeWriter, map[string]interface{}{"array": ApiCallValueInstance.Path,
 		"BaseLink": ApiCallValueInstance.BaseLink, "Title": config.DocTitle})
 }

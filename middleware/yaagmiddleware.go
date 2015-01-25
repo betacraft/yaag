@@ -6,7 +6,6 @@ package middleware
 import (
 	"bytes"
 	"fmt"
-	"github.com/gophergala/yaag/yaag"
 	"io"
 	"io/ioutil"
 	"log"
@@ -15,6 +14,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"strings"
+	"yaag/yaag"
 )
 
 var reqWriteExcludeHeaderDump = map[string]bool{
@@ -164,6 +164,7 @@ func after(apiCall *yaag.APICall, writer *httptest.ResponseRecorder, w http.Resp
 		fmt.Fprintf(w, writer.Body.String())
 		return
 	}
+	apiCall.MethodType = r.Method
 	apiCall.CurrentPath = r.RequestURI
 	apiCall.ResponseBody = writer.Body.String()
 	apiCall.ResponseCode = writer.Code
