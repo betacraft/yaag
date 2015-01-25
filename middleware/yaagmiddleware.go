@@ -167,21 +167,22 @@ func after(apiCall *yaag.APICall, writer *httptest.ResponseRecorder, w http.Resp
 		fmt.Fprintf(w, writer.Body.String())
 		return
 	}
-	apiCall.MethodType = r.Method
-	apiCall.CurrentPath = strings.Split(r.RequestURI, "?")[0]
-	apiCall.ResponseBody = writer.Body.String()
-	apiCall.ResponseCode = writer.Code
-	apiCall.ResponseHeader = readHeadersFromResponse(writer)
-	var baseUrl string
-	if r.TLS != nil {
-		baseUrl = fmt.Sprintf("https://%s", r.Host)
-	} else {
-		baseUrl = fmt.Sprintf("http://%s", r.Host)
+	if writer.Code != 404 {
+		apiCall.MethodType = r.Method
+		apiCall.CurrentPath = strings.Split(r.RequestURI, "?")[0]
+		apiCall.ResponseBody = writer.Body.String()
+		apiCall.ResponseCode = writer.Code
+		apiCall.ResponseHeader = readHeadersFromResponse(writer)
+		var baseUrl string
+		if r.TLS != nil {
+			baseUrl = fmt.Sprintf("https://%s", r.Host)
+		} else {
+			baseUrl = fmt.Sprintf("http://%s", r.Host)
+		}
+		yaag.ApiCallValueInstance.BaseLink = baseUrl
+		config := yaag.Config{Init: false, DocPath: "apidoc.html", DocTitle: "Core API"}
+		yaag.GenerateHtml(apiCall, &config)
 	}
-	yaag.ApiCallValueInstance.BaseLink = baseUrl
-	config := yaag.Config{Init: false, DocPath: "apidoc.html", DocTitle: "Core API"}
-	yaag.GenerateHtml(apiCall, &config)
-	printMap(apiCall.ResponseHeader)
 	for key, value := range apiCall.ResponseHeader {
 		w.Header().Add(key, value)
 	}
