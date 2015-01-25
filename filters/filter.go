@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"github.com/gophergala/yaag/middleware"
-	"github.com/gophergala/yaag/yaag"
 	"github.com/revel/revel"
 	"log"
 	"net/http/httptest"
 	"strings"
+	"yaag/yaag"
 )
 
 func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
@@ -69,14 +69,23 @@ func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
 	fc[0](c, fc[1:])
 
 	c.Result.Apply(c.Request, c.Response)
-
+	htmlValues := yaag.APICall{}
+	htmlValues.CommonRequestHeaders = make(map[string]string)
 	// get headers
 	for k, v := range c.Request.Header {
-
-		headers[k] = strings.Join(v, " ")
+		isCommon := false
+		for _, hk := range yaag.CommonHeaders {
+			if k == hk {
+				isCommon = true
+				htmlValues.CommonRequestHeaders[k] = strings.Join(v, " ")
+				break
+			}
+		}
+		if !isCommon {
+			headers[k] = strings.Join(v, " ")
+		}
 	}
 
-	htmlValues := yaag.APICall{}
 	htmlValues.MethodType = httpVerb
 	htmlValues.CurrentPath = c.Request.URL.Path
 	htmlValues.PostForm = make(map[string]string)

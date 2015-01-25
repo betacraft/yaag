@@ -191,6 +191,7 @@ func main() {
 
 func GenerateHtml(htmlValue *APICall, config *Config) {
 	shouldAddPathSpec := true
+	log.Printf("PathSpec : %v", ApiCallValueInstance.Path)
 	for _, pathSpec := range ApiCallValueInstance.Path {
 		if pathSpec.Path == htmlValue.CurrentPath && pathSpec.HttpVerb == htmlValue.MethodType {
 			shouldAddPathSpec = false
@@ -237,6 +238,6 @@ func GenerateHtml(htmlValue *APICall, config *Config) {
 		return
 	}
 	homeWriter := io.Writer(homeHtmlFile)
-	t.Execute(homeWriter, map[string]interface{}{"array": ApiCallValueInstance.Path[0].HtmlValues,
+	t.Execute(homeWriter, map[string]interface{}{"array": ApiCallValueInstance.Path,
 		"BaseLink": ApiCallValueInstance.BaseLink, "Title": config.DocTitle})
 }
