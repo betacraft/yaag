@@ -5,11 +5,12 @@ import (
 	"github.com/gorilla/mux"
 	"io/ioutil"
 	"net/http"
+	"time"
 	"yaag/middleware"
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
+	fmt.Fprintf(w, time.Now().String())
 }
 
 func postHandler(w http.ResponseWriter, r *http.Request) {
