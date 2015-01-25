@@ -6,7 +6,6 @@ package middleware
 import (
 	"bytes"
 	"fmt"
-	"github.com/gophergala/yaag/yaag"
 	"io"
 	"io/ioutil"
 	"log"
@@ -15,6 +14,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"strings"
+	"yaag/yaag"
 )
 
 var reqWriteExcludeHeaderDump = map[string]bool{
@@ -22,6 +22,12 @@ var reqWriteExcludeHeaderDump = map[string]bool{
 	"Content-Length":    true,
 	"Transfer-Encoding": true,
 	"Trailer":           true,
+	"Accept-Encoding":   false,
+	"Accept-Language":   false,
+	"Cache-Control":     false,
+	"Connection":        false,
+	"Origin":            false,
+	"User-Agent":        false,
 }
 
 type YaagHandler struct {
@@ -51,19 +57,20 @@ func HandleFunc(next func(http.ResponseWriter, *http.Request)) func(http.Respons
 }
 
 func before(apiCall *yaag.APICall, req *http.Request) {
-	headers := readHeaders(req)
-	val, ok := headers["Content-Type"]
+	apiCall.RequestHeader = readHeaders(req)
+	apiCall.RequestUrlParams = readQueryParams(req)
+	val, ok := apiCall.RequestHeader["Content-Type"]
 	log.Println(val)
 	if ok {
-		switch strings.TrimSpace(headers["Content-Type"]) {
+		switch strings.TrimSpace(apiCall.RequestHeader["Content-Type"]) {
 		case "application/x-www-form-urlencoded":
 			fallthrough
 		case "application/json, application/x-www-form-urlencoded":
 			log.Println("Reading form")
-			readPostForm(req)
+			apiCall.PostForm = readPostForm(req)
 		case "application/json":
 			log.Println("Reading body")
-			ReadBody(req)
+			apiCall.RequestBody = *ReadBody(req)
 		}
 	}
 }
@@ -114,6 +121,15 @@ func readHeaders(req *http.Request) map[string]string {
 	return headers
 }
 
+func readHeadersFromResponse(writer *httptest.ResponseRecorder) map[string]string {
+	headers := map[string]string{}
+	for k, v := range writer.Header() {
+		log.Println(k, v)
+		headers[k] = strings.Join(v, " ")
+	}
+	return headers
+}
+
 func ReadBody(req *http.Request) *string {
 	save := req.Body
 	var err error
@@ -148,11 +164,23 @@ func after(apiCall *yaag.APICall, writer *httptest.ResponseRecorder, w http.Resp
 		fmt.Fprintf(w, writer.Body.String())
 		return
 	}
-	log.Println(r.RequestURI)
-	log.Println(writer.Body.String())
-	log.Println(writer.Code)
-	for header := range writer.Header() {
-		log.Println(header)
+	apiCall.MethodType = r.Method
+	apiCall.CurrentPath = r.RequestURI
+	apiCall.ResponseBody = writer.Body.String()
+	apiCall.ResponseCode = writer.Code
+	apiCall.ResponseHeader = readHeadersFromResponse(writer)
+	var baseUrl string
+	if r.TLS != nil {
+		baseUrl = fmt.Sprintf("https://%s", r.Host)
+	} else {
+		baseUrl = fmt.Sprintf("http://%s", r.Host)
+	}
+	yaag.ApiCallValueInstance.BaseLink = baseUrl
+	config := yaag.Config{Init: false, DocPath: "apidoc.html", DocTitle: "Core API"}
+	yaag.GenerateHtml(apiCall, &config)
+	printMap(apiCall.ResponseHeader)
+	for key, value := range apiCall.ResponseHeader {
+		w.Header().Add(key, value)
 	}
 	w.WriteHeader(writer.Code)
 	w.Write(writer.Body.Bytes())
