@@ -74,7 +74,6 @@ func main() {
 }
 ```
 
-
 ## How to use with Revel
 
 1. Add yaag.record = true in conf/app.conf (before starting to record the api calls)
@@ -85,10 +84,14 @@ func main() {
 
 ## Screenshots
 
-### API doc is generated based on the paths
+#### API doc is generated based on the paths
 ![alt first](https://raw.github.com/gophergala/yaag/master/1.png)
-### Click on any call to see the details of the API
+#### Click on any call to see the details of the API
 ![alt second](https://raw.github.com/gophergala/yaag/master/2.png)
+
+## Screencast
+
+[YAAG ScreenCast](https://www.youtube.com/watch?v=dQWXxJn6_iE&feature=youtu.be)
 
 ## Adding Support for
 
