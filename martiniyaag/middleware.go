@@ -16,7 +16,7 @@ func Document(c martini.Context, w http.ResponseWriter, r *http.Request) {
 	apiCall := yaag.APICall{}
 	writer := httptest.NewRecorder()
 	c.MapTo(writer, (*http.ResponseWriter)(nil))
-	middleware.Before(apiCall, r)
+	middleware.Before(&apiCall, r)
 	c.Next()
-	middleware.After(apiCall, writer, w, r)
+	middleware.After(&apiCall, writer, w, r)
 }
