@@ -83,6 +83,9 @@ func readQueryParams(req *http.Request) map[string]string {
 	}
 	for _, param := range strings.Split(u.Query().Encode(), "&") {
 		value := strings.Split(param, "=")
+		if len(value) < 2 {
+			continue
+		}
 		params[value[0]] = value[1]
 	}
 	return params
@@ -165,7 +168,7 @@ func after(apiCall *yaag.APICall, writer *httptest.ResponseRecorder, w http.Resp
 		return
 	}
 	apiCall.MethodType = r.Method
-	apiCall.CurrentPath = r.RequestURI
+	apiCall.CurrentPath = strings.Split(r.RequestURI, "?")[0]
 	apiCall.ResponseBody = writer.Body.String()
 	apiCall.ResponseCode = writer.Code
 	apiCall.ResponseHeader = readHeadersFromResponse(writer)
