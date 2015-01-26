@@ -12,7 +12,6 @@ import (
 )
 
 func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
-
 	if record, _ := revel.Config.Bool("yaag.record"); !record {
 		log.Printf("record %v ", record)
 		fc[0](c, fc[1:])
@@ -107,6 +106,5 @@ func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
 
 	yaag.ApiCallValueInstance.BaseLink = c.Request.Host
 
-	config := yaag.Config{Init: false, DocPath: "apidoc.html"}
-	go yaag.GenerateHtml(&htmlValues, &config)
+	go yaag.GenerateHtml(&htmlValues)
 }

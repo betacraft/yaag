@@ -39,26 +39,34 @@ func Handle(next func(http.ResponseWriter, *http.Request)) http.Handler {
 }
 
 func (y *YaagHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if !yaag.IsOn() {
+		y.next(w, r)
+		return
+	}
 	writer := httptest.NewRecorder()
 	apiCall := yaag.APICall{}
-	before(&apiCall, r)
+	Before(&apiCall, r)
 	y.next(writer, r)
-	after(&apiCall, writer, w, r)
+	After(&apiCall, writer, w, r)
 }
 
 func HandleFunc(next func(http.ResponseWriter, *http.Request)) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
+		if !yaag.IsOn() {
+			next(w, r)
+			return
+		}
 		apiCall := yaag.APICall{}
 		writer := httptest.NewRecorder()
-		before(&apiCall, r)
+		Before(&apiCall, r)
 		next(writer, r)
-		after(&apiCall, writer, w, r)
+		After(&apiCall, writer, w, r)
 	}
 }
 
-func before(apiCall *yaag.APICall, req *http.Request) {
-	apiCall.RequestHeader = readHeaders(req)
-	apiCall.RequestUrlParams = readQueryParams(req)
+func Before(apiCall *yaag.APICall, req *http.Request) {
+	apiCall.RequestHeader = ReadHeaders(req)
+	apiCall.RequestUrlParams = ReadQueryParams(req)
 	val, ok := apiCall.RequestHeader["Content-Type"]
 	log.Println(val)
 	if ok {
@@ -67,7 +75,7 @@ func before(apiCall *yaag.APICall, req *http.Request) {
 			fallthrough
 		case "application/json, application/x-www-form-urlencoded":
 			log.Println("Reading form")
-			apiCall.PostForm = readPostForm(req)
+			apiCall.PostForm = ReadPostForm(req)
 		case "application/json":
 			log.Println("Reading body")
 			apiCall.RequestBody = *ReadBody(req)
@@ -75,7 +83,7 @@ func before(apiCall *yaag.APICall, req *http.Request) {
 	}
 }
 
-func readQueryParams(req *http.Request) map[string]string {
+func ReadQueryParams(req *http.Request) map[string]string {
 	params := map[string]string{}
 	u, err := url.Parse(req.RequestURI)
 	if err != nil {
@@ -97,7 +105,7 @@ func printMap(m map[string]string) {
 	}
 }
 
-func readPostForm(req *http.Request) map[string]string {
+func ReadPostForm(req *http.Request) map[string]string {
 	postForm := map[string]string{}
 	log.Println("", *ReadBody(req))
 	for _, param := range strings.Split(*ReadBody(req), "&") {
@@ -107,7 +115,7 @@ func readPostForm(req *http.Request) map[string]string {
 	return postForm
 }
 
-func readHeaders(req *http.Request) map[string]string {
+func ReadHeaders(req *http.Request) map[string]string {
 	b := bytes.NewBuffer([]byte(""))
 	err := req.Header.WriteSubset(b, reqWriteExcludeHeaderDump)
 	if err != nil {
@@ -124,7 +132,7 @@ func readHeaders(req *http.Request) map[string]string {
 	return headers
 }
 
-func readHeadersFromResponse(writer *httptest.ResponseRecorder) map[string]string {
+func ReadHeadersFromResponse(writer *httptest.ResponseRecorder) map[string]string {
 	headers := map[string]string{}
 	for k, v := range writer.Header() {
 		log.Println(k, v)
@@ -162,7 +170,7 @@ func ReadBody(req *http.Request) *string {
 	return &body
 }
 
-func after(apiCall *yaag.APICall, writer *httptest.ResponseRecorder, w http.ResponseWriter, r *http.Request) {
+func After(apiCall *yaag.APICall, writer *httptest.ResponseRecorder, w http.ResponseWriter, r *http.Request) {
 	if strings.Contains(r.RequestURI, ".ico") {
 		fmt.Fprintf(w, writer.Body.String())
 		return
@@ -172,7 +180,7 @@ func after(apiCall *yaag.APICall, writer *httptest.ResponseRecorder, w http.Resp
 		apiCall.CurrentPath = strings.Split(r.RequestURI, "?")[0]
 		apiCall.ResponseBody = writer.Body.String()
 		apiCall.ResponseCode = writer.Code
-		apiCall.ResponseHeader = readHeadersFromResponse(writer)
+		apiCall.ResponseHeader = ReadHeadersFromResponse(writer)
 		var baseUrl string
 		if r.TLS != nil {
 			baseUrl = fmt.Sprintf("https://%s", r.Host)
@@ -180,8 +188,7 @@ func after(apiCall *yaag.APICall, writer *httptest.ResponseRecorder, w http.Resp
 			baseUrl = fmt.Sprintf("http://%s", r.Host)
 		}
 		yaag.ApiCallValueInstance.BaseLink = baseUrl
-		config := yaag.Config{Init: false, DocPath: "apidoc.html", DocTitle: "Core API"}
-		yaag.GenerateHtml(apiCall, &config)
+		go yaag.GenerateHtml(apiCall)
 	}
 	for key, value := range apiCall.ResponseHeader {
 		w.Header().Add(key, value)

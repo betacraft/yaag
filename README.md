@@ -11,18 +11,68 @@ Most of the web services expose their APIs to the mobile or third party develope
 YAAG is a middleware. You have to add YAAG handler in your routes and you are done. Just go on calling your APIs using POSTMAN, Curl or from any client, and YAAG will keep on updating the API Doc html. 
 
 
-### Config parameters 
+## How to use with basic net.http package
 
-ReadMode :  If true then YAAG middleware will function and start recording the API calls and updating the API doc
-DocPath  :  Path where the API doc will be saved
-DocTitle :  API Doc title
-BaseUrl  :  Base URL of the Endpoints
+1. Import github.com/gophergala/yaag/yaag
+2. Import github.com/gophergala/yaag/middleware
+3. Initialize yaag ```yaag.Init(&yaag.Config{On: true, DocTitle: "Core", DocPath: "apidoc.html"})```
+4. Use it in your handlers as ```http.HandleFunc("/", middleware.HandleFunc(handler))```
 
-## Support
+####Sample code
 
-It's a middleware supporting http.Handler interface. So it will support all the frameworks that support Handler like martini, Gorilla Mux etc. 
-YAAG also supports revel framework.
-YAAG also supports gin framework.
+```go
+func handler(w http.ResponseWriter, r *http.Request) {
+  fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
+}
+
+func main() {
+  yaag.Init(&yaag.Config{On: true, DocTitle: "Core", DocPath: "apidoc.html"})
+  http.HandleFunc("/", middleware.HandleFunc(handler))
+  http.ListenAndServe(":8080", nil)
+}
+```
+
+## How to use with Gorilla Mux
+1. Import github.com/gophergala/yaag/yaag
+2. Import github.com/gophergala/yaag/middleware
+3. Initialize yaag ```yaag.Init(&yaag.Config{On: true, DocTitle: "Core", DocPath: "apidoc.html"})```
+4. Use it in your handlers as ```r.HandleFunc("/", middleware.HandleFunc(handler))```
+
+####Sample code
+
+```go
+func handler(w http.ResponseWriter, r *http.Request) {
+  fmt.Fprintf(w, time.Now().String())
+}
+
+func main() {
+  yaag.Init(&yaag.Config{On: true, DocTitle: "Gorilla Mux", DocPath: "apidoc.html"})
+  r := mux.NewRouter()
+  r.HandleFunc("/", middleware.HandleFunc(handler)) 
+  http.ListenAndServe(":8080", r)
+}
+```
+
+## How to use with Martini
+
+1. Import github.com/gophergala/yaag/yaag
+2. Import github.com/gophergala/yaag/martiniyaag
+3. Initialize yaag ```yaag.Init(&yaag.Config{On: true, DocTitle: "Core", DocPath: "apidoc.html"})```
+4. Add Yaag middleware like ```m.Use(martiniyaag.Document)```
+
+####Sample Code
+
+```go
+func main() {
+  yaag.Init(&yaag.Config{On: true, DocTitle: "Gorilla Mux", DocPath: "apidoc.html"})
+  m := martini.Classic()
+  m.Use(martiniyaag.Document)
+  m.Get("/", func() string {
+    return "Hello world!"
+  })
+  m.Run()
+}
+```
 
 ## How to use with Revel
 
@@ -32,10 +82,25 @@ YAAG also supports gin framework.
 4. Start recording Api calls
 
 
+## Screenshots
+
+#### API doc is generated based on the paths
+![alt first](https://raw.github.com/gophergala/yaag/master/1.png)
+#### Click on any call to see the details of the API
+![alt second](https://raw.github.com/gophergala/yaag/master/2.png)
+
+## Screencast
+
+[YAAG ScreenCast](https://www.youtube.com/watch?v=dQWXxJn6_iE&feature=youtu.be)
+
+## Adding Support for
+
+1. Gin framework
+
 ## Team
 
-Aniket Awati (aniket@rainingclouds.com)
-Akshay Deo (akshay@rainingclouds.com)
-Kaustubh Deshmukh (kaustubh@rainingclouds.com)
+* Aniket Awati (aniket@rainingclouds.com)
+* Akshay Deo (akshay@rainingclouds.com)
+* Kaustubh Deshmukh (kaustubh@rainingclouds.com)
 
 This project is initiated by RainingClouds Inc during GopherGala 2015.
