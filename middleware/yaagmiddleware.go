@@ -6,6 +6,7 @@ package middleware
 import (
 	"bytes"
 	"fmt"
+	"github.com/gophergala/yaag/yaag"
 	"io"
 	"io/ioutil"
 	"log"
@@ -14,7 +15,6 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"strings"
-	"yaag/yaag"
 )
 
 var reqWriteExcludeHeaderDump = map[string]bool{

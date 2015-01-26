@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"github.com/gophergala/yaag/middleware"
+	"github.com/gophergala/yaag/yaag"
 	"github.com/revel/revel"
 	"log"
 	"net/http/httptest"
 	"strings"
-	"yaag/yaag"
 )
 
 func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
