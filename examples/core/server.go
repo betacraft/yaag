@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
+	"github.com/RainingClouds/yaag/middleware"
+	"github.com/RainingClouds/yaag/yaag"
 	"io/ioutil"
 	"net/http"
 	"strings"
-	"yaag/middleware"
-	"yaag/yaag"
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
