@@ -3,8 +3,8 @@ package gin
 import (
 	"github.com/gin-gonic/gin"
 	"net/http/httptest"
-	"github.com/gophergala/yaag/middleware"
-	"github.com/gophergala/yaag/yaag"
+	"github.com/RainingClouds/yaag/middleware"
+	"github.com/RainingClouds/yaag/yaag"
 )
 
 func Document() gin.HandlerFunc {
