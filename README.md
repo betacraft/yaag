@@ -77,7 +77,7 @@ func main() {
 ## How to use with Revel
 
 1. Add yaag.record = true in conf/app.conf (before starting to record the api calls)
-2. import github.com/gophergala/yaag/filters in app/init.go
+2. import github.com/rainingclouds/yaag/filters in app/init.go
 3. add 'filters.FilterForApiDoc' in revel.Filters
 4. Start recording Api calls
 
