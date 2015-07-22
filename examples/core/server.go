@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/RainingClouds/yaag/middleware"
-	"github.com/RainingClouds/yaag/yaag"
+	"github.com/betacraft/yaag/middleware"
+	"github.com/betacraft/yaag/yaag"
 	"io/ioutil"
 	"net/http"
 	"strings"

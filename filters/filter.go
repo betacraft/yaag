@@ -3,8 +3,8 @@ package filters
 import (
 	"encoding/json"
 	"encoding/xml"
-	"github.com/RainingClouds/yaag/middleware"
-	"github.com/RainingClouds/yaag/yaag"
+	"github.com/betacraft/yaag/middleware"
+	"github.com/betacraft/yaag/yaag"
 	"github.com/revel/revel"
 	"log"
 	"net/http/httptest"
