@@ -248,11 +248,11 @@ func GenerateHtml(htmlValue *APICall) {
 		if pathSpec.Path == htmlValue.CurrentPath && pathSpec.HttpVerb == htmlValue.MethodType {
 			shouldAddPathSpec = false
 			shouldAdd := true
-			for _, value := range pathSpec.HtmlValues {
-				if value.ResponseBody == htmlValue.ResponseBody {
-					shouldAdd = false
-				}
-			}
+			// for _, value := range pathSpec.HtmlValues {
+			// 	if value.RequestBody == htmlValue.RequestBody {
+			// 		shouldAdd = false
+			// 	}
+			// }
 			if shouldAdd {
 				htmlValue.Id = count
 				count += 1
