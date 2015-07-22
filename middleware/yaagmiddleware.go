@@ -6,7 +6,7 @@ package middleware
 import (
 	"bytes"
 	"fmt"
-	"github.com/RainingClouds/yaag/yaag"
+	"github.com/betacraft/yaag/yaag"
 	"io"
 	"io/ioutil"
 	"log"
