@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/betacraft/yaag.svg)](https://travis-ci.org/betacraft/yaag)
+
 # YAAG : Yet Another API doc Generator
 
 Golang is awesome for developing web apps. And people have created a bunch of awesome Web-Frameworks, Web helper libraries. If we consider the entire ecosystem of web apps in Golang everything except API documentation seems to be in place. So we have created the first API doc generator for Golang based web apps and calling it Yet another.
