@@ -77,7 +77,7 @@ func main() {
 ## How to use with Revel
 
 1. Add yaag.record = true in conf/app.conf (before starting to record the api calls)
-2. import github.com/rainingclouds/yaag/filters in app/init.go
+2. import github.com/betacraft/yaag/filters in app/init.go
 3. add 'filters.FilterForApiDoc' in revel.Filters
 4. Start recording Api calls
 
@@ -99,8 +99,8 @@ func main() {
 
 ## Team
 
-* Aniket Awati (aniket@rainingclouds.com)
-* Akshay Deo (akshay@rainingclouds.com)
-* Kaustubh Deshmukh (kaustubh@rainingclouds.com)
+* Aniket Awati (aniket@betacraft.com)
+* Akshay Deo (akshay@betacraft.com)
+* Kaustubh Deshmukh (kaustubh@betacraft.com)
 
-This project is initiated by RainingClouds Inc during GopherGala 2015.
+This project is initiated by Betacraft Inc during GopherGala 2015.
