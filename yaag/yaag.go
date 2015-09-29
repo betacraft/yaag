@@ -163,12 +163,12 @@ const TEMPLATE = `<!DOCTYPE html>
             {{ end }}
             <hr>
         </div>
-    </div>    
+    </div>
     {{ end}}
-    {{ end}}    
+    {{ end}}
 </div>
 <div class="container text-center" style="margin-bottom: 40px;">
-    Developed by Gophers at <a href="http://rainingclouds.com">betacraft Inc</a>
+    Developed by Gophers at <a href="http://betacraft.co">betacraft Inc</a>
 </div>
 </body>
 </html>`
