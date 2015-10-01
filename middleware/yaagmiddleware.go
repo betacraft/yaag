@@ -6,7 +6,6 @@ package middleware
 import (
 	"bytes"
 	"fmt"
-	"github.com/gophergala/yaag/yaag"
 	"io"
 	"io/ioutil"
 	"log"
@@ -15,6 +14,8 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"strings"
+
+	"github.com/betacraft/yaag/yaag"
 )
 
 var reqWriteExcludeHeaderDump = map[string]bool{
@@ -31,22 +32,22 @@ var reqWriteExcludeHeaderDump = map[string]bool{
 }
 
 type YaagHandler struct {
-	next func(http.ResponseWriter, *http.Request)
+	nextHandler http.Handler
 }
 
-func Handle(next func(http.ResponseWriter, *http.Request)) http.Handler {
-	return &YaagHandler{next: next}
+func Handle(nextHandler http.Handler) http.Handler {
+	return &YaagHandler{nextHandler: nextHandler}
 }
 
 func (y *YaagHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if !yaag.IsOn() {
-		y.next(w, r)
+		y.nextHandler.ServeHTTP(w, r)
 		return
 	}
 	writer := httptest.NewRecorder()
 	apiCall := yaag.APICall{}
 	Before(&apiCall, r)
-	y.next(writer, r)
+	y.nextHandler.ServeHTTP(writer, r)
 	After(&apiCall, writer, w, r)
 }
 

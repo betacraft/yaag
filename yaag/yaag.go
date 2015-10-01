@@ -163,12 +163,12 @@ const TEMPLATE = `<!DOCTYPE html>
             {{ end }}
             <hr>
         </div>
-    </div>    
+    </div>
     {{ end}}
-    {{ end}}    
+    {{ end}}
 </div>
 <div class="container text-center" style="margin-bottom: 40px;">
-    Developed by Gophers at <a href="http://rainingclouds.com">RainingClouds Inc</a>
+    Developed by Gophers at <a href="http://betacraft.co">betacraft Inc</a>
 </div>
 </body>
 </html>`
@@ -248,11 +248,11 @@ func GenerateHtml(htmlValue *APICall) {
 		if pathSpec.Path == htmlValue.CurrentPath && pathSpec.HttpVerb == htmlValue.MethodType {
 			shouldAddPathSpec = false
 			shouldAdd := true
-			for _, value := range pathSpec.HtmlValues {
-				if value.ResponseBody == htmlValue.ResponseBody {
-					shouldAdd = false
-				}
-			}
+			// for _, value := range pathSpec.HtmlValues {
+			// 	if value.RequestBody == htmlValue.RequestBody {
+			// 		shouldAdd = false
+			// 	}
+			// }
 			if shouldAdd {
 				htmlValue.Id = count
 				count += 1

@@ -3,17 +3,16 @@ package filters
 import (
 	"encoding/json"
 	"encoding/xml"
-	"github.com/gophergala/yaag/middleware"
+	"github.com/betacraft/yaag/middleware"
+	"github.com/betacraft/yaag/yaag"
 	"github.com/revel/revel"
 	"log"
 	"net/http/httptest"
 	"strings"
-	"yaag/yaag"
 )
 
 func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
 	if record, _ := revel.Config.Bool("yaag.record"); !record {
-		log.Printf("record %v ", record)
 		fc[0](c, fc[1:])
 		return
 	}
@@ -27,7 +26,6 @@ func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
 	hasXml := false
 
 	body := middleware.ReadBody(c.Request.Request)
-	log.Println(*body)
 
 	if c.Request.ContentType == "application/json" {
 		if httpVerb == "POST" || httpVerb == "PUT" || httpVerb == "PATCH" {
@@ -63,7 +61,7 @@ func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
 			}
 		}
 	}
-	log.Println(hasXml, hasJson)
+	log.Println(hasJson,hasXml)
 	// call remaiing filters
 	fc[0](c, fc[1:])
 

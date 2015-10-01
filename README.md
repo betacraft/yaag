@@ -1,6 +1,10 @@
+[![Build Status](https://travis-ci.org/betacraft/yaag.svg)](https://travis-ci.org/betacraft/yaag)
+
+[Trello Board](https://trello.com/b/jCZlTsNj/yaag)
+
 # YAAG : Yet Another API doc Generator
 
-Golang is awesome for developing web apps. And people have created a bunch of awesome Web-Frameworks, Web hepler libraries. If we consider the entire ecosystem of web apps in Golang everything except API documentation seems to be in place. So we have created the first API doc generator for Golang based web apps and calling it Yet another.
+Golang is awesome for developing web apps. And people have created a bunch of awesome Web-Frameworks, Web helper libraries. If we consider the entire ecosystem of web apps in Golang everything except API documentation seems to be in place. So we have created the first API doc generator for Golang based web apps and calling it Yet another.
 
 ## Why ?
 
@@ -77,7 +81,7 @@ func main() {
 ## How to use with Revel
 
 1. Add yaag.record = true in conf/app.conf (before starting to record the api calls)
-2. import github.com/gophergala/yaag/filters in app/init.go
+2. import github.com/betacraft/yaag/filters in app/init.go
 3. add 'filters.FilterForApiDoc' in revel.Filters
 4. Start recording Api calls
 
@@ -99,8 +103,8 @@ func main() {
 
 ## Team
 
-* Aniket Awati (aniket@rainingclouds.com)
-* Akshay Deo (akshay@rainingclouds.com)
-* Kaustubh Deshmukh (kaustubh@rainingclouds.com)
+* Aniket Awati (aniket@betacraft.com)
+* Akshay Deo (akshay@betacraft.com)
+* Kaustubh Deshmukh (kaustubh@betacraft.com)
 
-This project is initiated by RainingClouds Inc during GopherGala 2015.
+This project is initiated by Betacraft Inc during GopherGala 2015.

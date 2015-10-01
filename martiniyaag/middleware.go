@@ -1,9 +1,9 @@
 package martiniyaag
 
 import (
+	"github.com/betacraft/yaag/middleware"
+	"github.com/betacraft/yaag/yaag"
 	"github.com/go-martini/martini"
-	"github.com/gophergala/yaag/middleware"
-	"github.com/gophergala/yaag/yaag"
 	"net/http"
 	"net/http/httptest"
 )
