@@ -56,13 +56,14 @@
 </nav>
 <div class="container" style="margin-top: 70px;margin-bottom: 20px;">
     <div class="alert alert-info">
-        <p>Base URL => <strong>{{.BaseLink}}</strong></p></div>
+        <p>Base URL => <strong>{{.BaseLink}}</strong></p>
+    </div>
     <hr>
     {{ range $key, $value := .array }}
     <h4 id="{{$key}}top"><a class="anchor" href="#{{$key}}top"><span class="glyphicon glyphicon-link"
               aria-hidden="true"></span></a> <code>{{$value.HttpVerb}}
         {{$value.Path}}</code></h4>
-    {{ range $wrapperKey, $wrapperValue := $value.HtmlValues }}
+    {{ range $wrapperKey, $wrapperValue := $value.Calls }}
     <div id="{{$wrapperValue.Id}}" class="container" style="margin-left:2em;">
         <h4  style="cursor:pointer;" type="button" data-toggle="collapse" data-target="#{{$wrapperValue.Id}}container"
             aria-expanded="false" aria-controls="collapseExample"><a class="anchor" href="#{{$wrapperValue.Id}}"><span class="glyphicon glyphicon-link"
