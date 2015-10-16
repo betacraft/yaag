@@ -12,8 +12,7 @@ Most of the web services expose their APIs to the mobile or third party develope
 
 ## How it works ?
 
-YAAG is a middleware. You have to add YAAG handler in your routes and you are done. Just go on calling your APIs using POSTMAN, Curl or from any client, and YAAG will keep on updating the API Doc html. 
-
+YAAG is a middleware. You have to add YAAG handler in your routes and you are done. Just go on calling your APIs using POSTMAN, Curl or from any client, and YAAG will keep on updating the API Doc html. (Note: We are also generating a json file containing data af all API calls)
 
 ## How to use with basic net.http package
 
