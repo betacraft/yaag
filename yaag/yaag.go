@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"html/template"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -295,18 +294,20 @@ func GenerateHtml(htmlValue *APICall) {
 	homeHtmlFile, err := os.Create(filePath)
 	defer homeHtmlFile.Close()
 
+	dataFile, err := os.Create(filePath + ".json")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	defer dataFile.Close()
+
 	data, err := json.Marshal(ApiCallValueInstance)
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
-	if ioutil.WriteFile(filePath+".json", data, os.O_CREATE) != nil {
-		log.Println(err)
-		return
-	}
-
-	_, err := dataFile.Write(data)
+	_, err = dataFile.Write(data)
 	if err != nil {
 		log.Println(err)
 		return
