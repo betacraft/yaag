@@ -16,15 +16,26 @@ const TEMPLATE = `<!DOCTYPE html>
 <html>
 <head lang="en">
     <title> API Documentation </title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
+          integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ=="
+          crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"
+          integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
+            integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ=="
+            crossorigin="anonymous"></script>
+
     <script src="http://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
     <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.css">
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
     <style type="text/css">
         body {
             font-family: 'Roboto', sans-serif;
@@ -41,7 +52,7 @@ const TEMPLATE = `<!DOCTYPE html>
     <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
-<nav class="navbar navbar-default navbar-fixed-top">
+<nav class="navbar navbar-default navbar-static-top">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
@@ -54,122 +65,33 @@ const TEMPLATE = `<!DOCTYPE html>
             </button>
             <a class="navbar-brand" href="#">{{.Title}}</a>
         </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse pull-right" id="bs-example-navbar-collapse-1">
-            <form class="navbar-form navbar-left" role="search">
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search">
-                </div>
-                <button type="submit" class="btn btn-default">Find</button>
-            </form>
-        </div>
         <!-- /.navbar-collapse -->
     </div>
     <!-- /.container-fluid -->
 </nav>
-<div class="container" style="margin-top: 70px;margin-bottom: 20px;">
-    <div class="alert alert-info">
-        <p>Base URL => <strong>{{.BaseLink}}</strong></p></div>
-    <hr>
-    {{ range $key, $value := .array }}
-    <h4 id="{{$key}}top"><a class="anchor" href="#{{$key}}top"><span class="glyphicon glyphicon-link"
-              aria-hidden="true"></span></a> <code>{{$value.HttpVerb}}
-        {{$value.Path}}</code></h4>
-    {{ range $wrapperKey, $wrapperValue := $value.HtmlValues }}
-    <div id="{{$wrapperValue.Id}}" class="container" style="margin-left:2em;">
-        <h4  style="cursor:pointer;" type="button" data-toggle="collapse" data-target="#{{$wrapperValue.Id}}container"
-            aria-expanded="false" aria-controls="collapseExample"><a class="anchor" href="#{{$wrapperValue.Id}}"><span class="glyphicon glyphicon-link"
-                                                                        aria-hidden="true"></span></a> Example {{add $wrapperKey 1}}
-        </h4>
-        <hr>
-        <div class="collapse" id="{{$wrapperValue.Id}}container">
-            {{ if $wrapperValue.RequestHeader }}
-            <p> <H4> Request Headers </H4> </p>
-            <table class="table table-bordered table-striped">
-                <tr>
-                    <th>Key</th>
-                    <th>Value</th>
-                </tr>
-                {{ range $key, $value := $wrapperValue.RequestHeader }}
-                <tr>
-                    <td>{{ $key }}</td>
-                    <td> {{ $value }}</td>
-                </tr>
-                {{ end }}
-            </table>
-            {{ end }}
-
-            {{ if $wrapperValue.PostForm }}
-            <p> <H4> Post Form </H4> </p>
-            <table class="table table-bordered table-striped">
-                <tr>
-                    <th>Key</th>
-                    <th>Value</th>
-                </tr>
-                {{ range $key, $value := $wrapperValue.PostForm }}
-                <tr>
-                    <td>{{ $key }}</td>
-                    <td> {{ $value }}</td>
-                </tr>
-                {{ end }}
-            </table>
-            {{ end }}
-
-
-            {{ if $wrapperValue.RequestUrlParams }}
-            <p> <H4> URL Params </H4> </p>
-            <table class="table table-bordered table-striped">
-                <tr>
-                    <th>Key</th>
-                    <th>Value</th>
-                </tr>
-                {{ range $key, $value := $wrapperValue.RequestUrlParams }}
-                <tr>
-                    <td>{{ $key }}</td>
-                    <td> {{ $value }}</td>
-                </tr>
-                {{ end }}
-            </table>
-            {{ end }}
-
-            {{ if $wrapperValue.RequestBody }}
-            <p> <H4> Request Body </H4> </p>
-            <pre class="prettyprint lang-json">{{ $wrapperValue.RequestBody }}</pre>
-            {{ end }}
-
-            <p><h4> Response Code</h4></p>
-            <pre class="prettyprint lang-json">{{ $wrapperValue.ResponseCode }}</pre>
-
-            {{ if $wrapperValue.ResponseHeader }}
-            <p><h4> Response Headers</h4></p>
-            <table class="table table-bordered table-striped">
-                <tr>
-                    <th>Key</th>
-                    <th>Value</th>
-                </tr>
-                {{ range $key, $value := $wrapperValue.ResponseHeader }}
-                <tr>
-                    <td>{{ $key }}</td>
-                    <td> {{ $value }}</td>
-                </tr>
-                {{ end }}
-            </table>
-            {{ end }}
-
-
-            {{ if $wrapperValue.ResponseBody }}
-            <p> <H4> Response Body </H4> </p>
-            <pre class="prettyprint lang-json">{{ $wrapperValue.ResponseBody }}</pre>
-            {{ end }}
-            <hr>
-        </div>
+<div class="container-fluid">
+    <div class="alert alert-default">
+        <p>Base URL : <strong>{{.BaseLink}}</strong></p>
     </div>
-    {{ end}}
-    {{ end}}
-</div>
-<div class="container text-center" style="margin-bottom: 40px;">
-    Developed by Gophers at <a href="http://betacraft.co">betacraft Inc</a>
+    <div class="wrapper">
+        <section class="col--cwcl--l">
+            <div class="nav--cwcl">
+                <h2 class="title--column js-nav-title">Paths</h2>
+                {{ range $key, $value := .array }}
+                <ul class="list--reset list--column js-nav-list">
+                    <li><a class="nav--cwcl__item anchor">{{$value.Path}}</a> </li>
+                </ul>
+
+                {{ end }}
+            </div>
+        </section>
+        <section class="col-cwcl-r float--clear">
+            <div class="wrapper--content">
+
+            </div>
+        </section>
+
+    </div>
 </div>
 </body>
 </html>`
@@ -241,14 +163,6 @@ func Init(conf *Config) {
 	config = conf
 }
 
-func add(x, y int) int {
-	return x + y
-}
-
-func mult(x, y int) int {
-	return (x + 1) * y
-}
-
 func GenerateHtml(htmlValue *APICall) {
 	shouldAddPathSpec := true
 	log.Printf("PathSpec : %v", ApiCallValueInstance.Path)
@@ -256,11 +170,6 @@ func GenerateHtml(htmlValue *APICall) {
 		if pathSpec.Path == htmlValue.CurrentPath && pathSpec.HttpVerb == htmlValue.MethodType {
 			shouldAddPathSpec = false
 			shouldAdd := true
-			// for _, value := range pathSpec.HtmlValues {
-			// 	if value.RequestBody == htmlValue.RequestBody {
-			// 		shouldAdd = false
-			// 	}
-			// }
 			if shouldAdd {
 				htmlValue.Id = count
 				count += 1
@@ -281,8 +190,8 @@ func GenerateHtml(htmlValue *APICall) {
 		pathSpec.HtmlValues = append(pathSpec.HtmlValues, *htmlValue)
 		ApiCallValueInstance.Path = append(ApiCallValueInstance.Path, pathSpec)
 	}
-	funcs := template.FuncMap{"add": add, "mult": mult}
-	t := template.New("API Documentation").Funcs(funcs)
+
+	t := template.New("API Documentation")
 	filePath, err := filepath.Abs(config.DocPath)
 	htmlString := TEMPLATE
 
