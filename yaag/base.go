@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+package yaag
+
+const Template = `<!DOCTYPE html>
 <html>
 <head lang="en">
     <title> API Documentation </title>
@@ -6,10 +8,10 @@
     <script src="http://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
     <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.css">
-    
+    <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    
+    <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
     <style type="text/css">
         body {
@@ -37,7 +39,7 @@
 <body>
 <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
-        
+        <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                     data-target="#bs-example-navbar-collapse-1">
@@ -46,13 +48,13 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Core</a>
+            <a class="navbar-brand" href="#">{{.Title}}</a>
             <p class="navbar-text">Developed by Gophers at <a href="http://betacraft.co">Betacraft</a></p>
         </div>
             
-        
+        <!-- /.navbar-collapse -->
     </div>
-    
+    <!-- /.container-fluid -->
 </nav>
 <div class="container-fluid" style="margin-top: 70px;margin-bottom: 20px;">
     <div class="container-fluid">
@@ -60,97 +62,98 @@
         <div class="panel panel-default">
               <div class="panel-heading">Base Urls</div>
               <div class="panel-body">
-                
-                    <p>Production : <strong>http://testing.com</strong></p>
-                
+                {{ range $key, $value := .baseUrls }}
+                    <p>{{$key}} : <strong>{{ $value }}</strong></p>
+                {{ end }}
               </div>
             </div>    
         <ul class="nav nav-pills nav-stacked" role="tablist">
-            
-                <li role="presentation"><a href="#0top" role="tab" data-toggle="tab">GET : /</a></li>
-            
-                <li role="presentation"><a href="#1top" role="tab" data-toggle="tab">POST : /say_it</a></li>
-            
+            {{ range $key, $value := .array }}
+                <li role="presentation"><a href="#{{$key}}top" role="tab" data-toggle="tab">{{$value.HttpVerb}} : {{$value.Path}}</a></li>
+            {{ end }}
         <ul>
     </div>
     <div class="col-md-8 tab-content">
-        
-        <div id="0top"  role="tabpanel" class="tab-pane col-md-10">
-            
-                
+        {{ range $key, $value := .array }}
+        <div id="{{$key}}top"  role="tabpanel" class="tab-pane col-md-10">
+            {{ range $wrapperKey, $wrapperValue := $value.Calls }}
+                {{ if $wrapperValue.RequestHeader }}
                 <p> <H4> Request Headers </H4> </p>
                 <table class="table table-bordered table-striped">
                     <tr>
                         <th>Key</th>
                         <th>Value</th>
                     </tr>
-                    
+                    {{ range $key, $value := $wrapperValue.RequestHeader }}
                     <tr>
-                        <td>Content-Type</td>
-                        <td>  application/json</td>
+                        <td>{{ $key }}</td>
+                        <td> {{ $value }}</td>
                     </tr>
-                    
+                    {{ end }}
                 </table>
-                
-                
-                
-                
-                <p><h4> Response Code</h4></p>
-                <pre class="prettyprint lang-json">200</pre>
-                
-                
-                <p> <H4> Response Body </H4> </p>
-                <pre class="prettyprint lang-json">Hi there, I love !</pre>
-                
-                <hr>
-            
-        </div>
-        
-        <div id="1top"  role="tabpanel" class="tab-pane col-md-10">
-            
-                
-                <p> <H4> Request Headers </H4> </p>
+                {{ end }}
+                {{ if $wrapperValue.PostForm }}
+                <p> <H4> Post Form </H4> </p>
                 <table class="table table-bordered table-striped">
                     <tr>
                         <th>Key</th>
                         <th>Value</th>
                     </tr>
-                    
+                    {{ range $key, $value := $wrapperValue.PostForm }}
                     <tr>
-                        <td>Content-Type</td>
-                        <td>  application/json</td>
+                        <td>{{ $key }}</td>
+                        <td> {{ $value }}</td>
                     </tr>
-                    
+                    {{ end }}
                 </table>
-                
-                
-                
-                
+                {{ end }}
+                {{ if $wrapperValue.RequestUrlParams }}
+                <p> <H4> URL Params </H4> </p>
+                <table class="table table-bordered table-striped">
+                    <tr>
+                        <th>Key</th>
+                        <th>Value</th>
+                    </tr>
+                    {{ range $key, $value := $wrapperValue.RequestUrlParams }}
+                    <tr>
+                        <td>{{ $key }}</td>
+                        <td> {{ $value }}</td>
+                    </tr>
+                    {{ end }}
+                </table>
+                {{ end }}
+                {{ if $wrapperValue.RequestBody }}
+                <p> <H4> Request Body </H4> </p>                
+                <pre class="prettyprint lang-json">{{ $wrapperValue.RequestBody }}</pre>
+                {{ end }}
                 <p><h4> Response Code</h4></p>
-                <pre class="prettyprint lang-json">200</pre>
-                
+                <pre class="prettyprint lang-json">{{ $wrapperValue.ResponseCode }}</pre>
+                {{ if $wrapperValue.ResponseHeader }}
                 <p><h4> Response Headers</h4></p>
                 <table class="table table-bordered table-striped">
                     <tr>
                         <th>Key</th>
                         <th>Value</th>
                     </tr>
-                    
+                    {{ range $key, $value := $wrapperValue.ResponseHeader }}
                     <tr>
-                        <td>Test</td>
-                        <td> tesasasdasd</td>
+                        <td>{{ $key }}</td>
+                        <td> {{ $value }}</td>
                     </tr>
-                    
+                    {{ end }}
                 </table>
-                
-                
+                {{ end }}
+                {{ if $wrapperValue.ResponseBody }}
+                <p> <H4> Response Body </H4> </p>
+                <pre class="prettyprint lang-json">{{ $wrapperValue.ResponseBody }}</pre>
+                {{ end }}
                 <hr>
-            
+            {{ end }}
         </div>
-        
+        {{ end }}
     </div>   
 </div>
 </div>
 <hr>
 </body>
-</html>
+</html>`
