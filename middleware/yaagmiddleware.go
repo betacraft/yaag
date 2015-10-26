@@ -16,6 +16,7 @@ import (
 	"strings"
 
 	"github.com/betacraft/yaag/yaag"
+	"github.com/betacraft/yaag/yaag/models"
 )
 
 var reqWriteExcludeHeaderDump = map[string]bool{
@@ -45,7 +46,7 @@ func (y *YaagHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writer := httptest.NewRecorder()
-	apiCall := yaag.APICall{}
+	apiCall := models.ApiCall{}
 	Before(&apiCall, r)
 	y.nextHandler.ServeHTTP(writer, r)
 	After(&apiCall, writer, w, r)
@@ -57,7 +58,7 @@ func HandleFunc(next func(http.ResponseWriter, *http.Request)) func(http.Respons
 			next(w, r)
 			return
 		}
-		apiCall := yaag.APICall{}
+		apiCall := models.ApiCall{}
 		writer := httptest.NewRecorder()
 		Before(&apiCall, r)
 		next(writer, r)
@@ -65,7 +66,7 @@ func HandleFunc(next func(http.ResponseWriter, *http.Request)) func(http.Respons
 	}
 }
 
-func Before(apiCall *yaag.APICall, req *http.Request) {
+func Before(apiCall *models.ApiCall, req *http.Request) {
 	apiCall.RequestHeader = ReadHeaders(req)
 	apiCall.RequestUrlParams = ReadQueryParams(req)
 	val, ok := apiCall.RequestHeader["Content-Type"]
@@ -171,7 +172,7 @@ func ReadBody(req *http.Request) *string {
 	return &body
 }
 
-func After(apiCall *yaag.APICall, writer *httptest.ResponseRecorder, w http.ResponseWriter, r *http.Request) {
+func After(apiCall *models.ApiCall, writer *httptest.ResponseRecorder, w http.ResponseWriter, r *http.Request) {
 	if strings.Contains(r.RequestURI, ".ico") {
 		fmt.Fprintf(w, writer.Body.String())
 		return
@@ -182,13 +183,6 @@ func After(apiCall *yaag.APICall, writer *httptest.ResponseRecorder, w http.Resp
 		apiCall.ResponseBody = writer.Body.String()
 		apiCall.ResponseCode = writer.Code
 		apiCall.ResponseHeader = ReadHeadersFromResponse(writer)
-		var baseUrl string
-		if r.TLS != nil {
-			baseUrl = fmt.Sprintf("https://%s", r.Host)
-		} else {
-			baseUrl = fmt.Sprintf("http://%s", r.Host)
-		}
-		yaag.ApiCallValueInstance.BaseLink = baseUrl
 		go yaag.GenerateHtml(apiCall)
 	}
 	for key, value := range apiCall.ResponseHeader {

@@ -3,3 +3,6 @@
 filters/*.html
 examples/core/core
 examples/core/server
+*/*.iml
+.idea/*
+examples/*.html
