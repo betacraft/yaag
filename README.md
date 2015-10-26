@@ -12,13 +12,12 @@ Most of the web services expose their APIs to the mobile or third party develope
 
 ## How it works ?
 
-YAAG is a middleware. You have to add YAAG handler in your routes and you are done. Just go on calling your APIs using POSTMAN, Curl or from any client, and YAAG will keep on updating the API Doc html. 
-
+YAAG is a middleware. You have to add YAAG handler in your routes and you are done. Just go on calling your APIs using POSTMAN, Curl or from any client, and YAAG will keep on updating the API Doc html. (Note: We are also generating a json file containing data af all API calls)
 
 ## How to use with basic net.http package
 
-1. Import github.com/gophergala/yaag/yaag
-2. Import github.com/gophergala/yaag/middleware
+1. Import github.com/betacraft/yaag/yaag
+2. Import github.com/betacraft/yaag/middleware
 3. Initialize yaag ```yaag.Init(&yaag.Config{On: true, DocTitle: "Core", DocPath: "apidoc.html"})```
 4. Use it in your handlers as ```http.HandleFunc("/", middleware.HandleFunc(handler))```
 
@@ -37,8 +36,8 @@ func main() {
 ```
 
 ## How to use with Gorilla Mux
-1. Import github.com/gophergala/yaag/yaag
-2. Import github.com/gophergala/yaag/middleware
+1. Import github.com/betacraft/yaag/yaag
+2. Import github.com/betacraft/yaag/middleware
 3. Initialize yaag ```yaag.Init(&yaag.Config{On: true, DocTitle: "Core", DocPath: "apidoc.html"})```
 4. Use it in your handlers as ```r.HandleFunc("/", middleware.HandleFunc(handler))```
 
@@ -59,8 +58,8 @@ func main() {
 
 ## How to use with Martini
 
-1. Import github.com/gophergala/yaag/yaag
-2. Import github.com/gophergala/yaag/martiniyaag
+1. Import github.com/betacraft/yaag/yaag
+2. Import github.com/betacraft/yaag/martiniyaag
 3. Initialize yaag ```yaag.Init(&yaag.Config{On: true, DocTitle: "Core", DocPath: "apidoc.html"})```
 4. Add Yaag middleware like ```m.Use(martiniyaag.Document)```
 
@@ -89,9 +88,9 @@ func main() {
 ## Screenshots
 
 #### API doc is generated based on the paths
-![alt first](https://raw.github.com/gophergala/yaag/master/1.png)
+![alt first](https://raw.github.com/betacraft/yaag/master/1.png)
 #### Click on any call to see the details of the API
-![alt second](https://raw.github.com/gophergala/yaag/master/2.png)
+![alt second](https://raw.github.com/betacraft/yaag/master/2.png)
 
 ## Screencast
 

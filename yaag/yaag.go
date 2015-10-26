@@ -4,8 +4,10 @@
 package yaag
 
 import (
+	"encoding/json"
 	"html/template"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -230,6 +232,13 @@ func IsOn() bool {
 }
 
 func Init(conf *Config) {
+	filePath, err := filepath.Abs(conf.DocPath + ".json")
+	dataFile, err := os.Open(filePath)
+	defer dataFile.Close()
+
+	if err == nil {
+		json.NewDecoder(io.Reader(dataFile)).Decode(ApiCallValueInstance)
+	}
 	config = conf
 }
 
@@ -286,6 +295,18 @@ func GenerateHtml(htmlValue *APICall) {
 	homeHtmlFile, err := os.Create(filePath)
 	defer homeHtmlFile.Close()
 
+	data, err := json.Marshal(ApiCallValueInstance)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	if ioutil.WriteFile(filePath+".json", data, os.O_CREATE) != nil {
+		log.Println(err)
+		return
+	}
+
+	_, err := dataFile.Write(data)
 	if err != nil {
 		log.Println(err)
 		return
