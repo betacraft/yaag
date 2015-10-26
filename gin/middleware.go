@@ -3,6 +3,7 @@ package gin
 import (
 	"fmt"
 	"github.com/betacraft/yaag/middleware"
+	"github.com/betacraft/yaag/models"
 	"github.com/betacraft/yaag/yaag"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -16,7 +17,7 @@ func Document() gin.HandlerFunc {
 			return
 		}
 		writer := httptest.NewRecorder()
-		apiCall := yaag.APICall{}
+		apiCall := models.ApiCall{}
 		middleware.Before(&apiCall, c.Request)
 		c.Next()
 		r := c.Request
@@ -31,13 +32,6 @@ func Document() gin.HandlerFunc {
 				headers[k] = strings.Join(v, " ")
 			}
 			apiCall.ResponseHeader = headers
-			var baseUrl string
-			if r.TLS != nil {
-				baseUrl = fmt.Sprintf("https://%s", r.Host)
-			} else {
-				baseUrl = fmt.Sprintf("http://%s", r.Host)
-			}
-			yaag.ApiCallValueInstance.BaseLink = baseUrl
 			go yaag.GenerateHtml(&apiCall)
 		}
 	}
