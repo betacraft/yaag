@@ -22,7 +22,7 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	yaag.Init(&yaag.Config{On: true, DocTitle: "Gorilla Mux", DocPath: "apidoc.html"})
+	yaag.Init(&yaag.Config{On: true, DocTitle: "Gorilla Mux", DocPath: "apidoc.html", BaseUrls: map[string]string{"Production": "", "Staging": ""}})
 	r := mux.NewRouter()
 	r.HandleFunc("/", middleware.HandleFunc(handler))
 	r.HandleFunc("/testing", middleware.HandleFunc(postHandler)).Methods("POST")
