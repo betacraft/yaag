@@ -2,6 +2,7 @@ package martiniyaag
 
 import (
 	"github.com/betacraft/yaag/middleware"
+	"github.com/betacraft/yaag/models"
 	"github.com/betacraft/yaag/yaag"
 	"github.com/go-martini/martini"
 	"net/http"
@@ -13,7 +14,7 @@ func Document(c martini.Context, w http.ResponseWriter, r *http.Request) {
 		c.Next()
 		return
 	}
-	apiCall := yaag.APICall{}
+	apiCall := models.ApiCall{}
 	writer := httptest.NewRecorder()
 	c.MapTo(writer, (*http.ResponseWriter)(nil))
 	middleware.Before(&apiCall, r)

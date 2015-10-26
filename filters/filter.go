@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"github.com/betacraft/yaag/middleware"
+	"github.com/betacraft/yaag/models"
 	"github.com/betacraft/yaag/yaag"
 	"github.com/revel/revel"
 	"log"
@@ -61,12 +62,12 @@ func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
 			}
 		}
 	}
-	log.Println(hasJson,hasXml)
+	log.Println(hasJson, hasXml)
 	// call remaiing filters
 	fc[0](c, fc[1:])
 
 	c.Result.Apply(c.Request, c.Response)
-	htmlValues := yaag.APICall{}
+	htmlValues := models.ApiCall{}
 	htmlValues.CommonRequestHeaders = make(map[string]string)
 	// get headers
 	for k, v := range c.Request.Header {
@@ -101,8 +102,5 @@ func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
 		htmlValues.ResponseHeader[k] = strings.Join(v, " ")
 	}
 	htmlValues.ResponseCode = w.Code
-
-	yaag.ApiCallValueInstance.BaseLink = c.Request.Host
-
 	go yaag.GenerateHtml(&htmlValues)
 }
