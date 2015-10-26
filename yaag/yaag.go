@@ -24,13 +24,6 @@ func IsOn() bool {
 }
 
 func Init(conf *Config) {
-	filePath, err := filepath.Abs(conf.DocPath + ".json")
-	dataFile, err := os.Open(filePath)
-	defer dataFile.Close()
-
-	if err == nil {
-		json.NewDecoder(io.Reader(dataFile)).Decode(ApiCallValueInstance)
-	}
 	config = conf
 	// load the config file
 	filePath, err := filepath.Abs(conf.DocPath + ".json")
