@@ -1,14 +1,14 @@
 package gin
 
 import (
-	"fmt"
-	"github.com/betacraft/yaag/middleware"
-	"github.com/betacraft/yaag/models"
-	"github.com/betacraft/yaag/yaag"
-	"github.com/gin-gonic/gin"
 	"log"
 	"net/http/httptest"
 	"strings"
+
+	"github.com/betacraft/yaag/middleware"
+	"github.com/betacraft/yaag/yaag"
+	"github.com/betacraft/yaag/yaag/models"
+	"github.com/gin-gonic/gin"
 )
 
 func Document() gin.HandlerFunc {
@@ -20,7 +20,6 @@ func Document() gin.HandlerFunc {
 		apiCall := models.ApiCall{}
 		middleware.Before(&apiCall, c.Request)
 		c.Next()
-		r := c.Request
 		if writer.Code != 404 {
 			apiCall.MethodType = c.Request.Method
 			apiCall.CurrentPath = strings.Split(c.Request.RequestURI, "?")[0]
