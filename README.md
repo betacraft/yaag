@@ -102,8 +102,8 @@ func main() {
 
 ## Team
 
-* Aniket Awati (aniket@betacraft.com)
-* Akshay Deo (akshay@betacraft.com)
-* Kaustubh Deshmukh (kaustubh@betacraft.com)
+* Aniket Awati (aniket@betacraft.co)
+* Akshay Deo (akshay@betacraft.co)
+* Kaustubh Deshmukh (kaustubh@betacraft.co)
 
-This project is initiated by Betacraft Inc during GopherGala 2015.
+This project is initiated by Betacraft during GopherGala 2015.
