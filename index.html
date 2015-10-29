@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Yaag by betacraft</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Yaag</h1>
+      <h2 class="project-tagline">Yet Another ApiDoc Generator (for Golang web apps)</h2>
+      <a href="https://github.com/betacraft/yaag" class="btn">View on GitHub</a>
+      <a href="https://github.com/betacraft/yaag/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/betacraft/yaag/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <p><a href="https://travis-ci.org/betacraft/yaag"><img src="https://travis-ci.org/betacraft/yaag.svg" alt="Build Status"></a></p>
+
+<p><a href="https://trello.com/b/jCZlTsNj/yaag">Trello Board</a></p>
+
+<h1>
+<a id="yaag--yet-another-api-doc-generator" class="anchor" href="#yaag--yet-another-api-doc-generator" aria-hidden="true"><span class="octicon octicon-link"></span></a>YAAG : Yet Another API doc Generator</h1>
+
+<p>Golang is awesome for developing web apps. And people have created a bunch of awesome Web-Frameworks, Web helper libraries. If we consider the entire ecosystem of web apps in Golang everything except API documentation seems to be in place. So we have created the first API doc generator for Golang based web apps and calling it Yet another.</p>
+
+<h2>
+<a id="why-" class="anchor" href="#why-" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why ?</h2>
+
+<p>Most of the web services expose their APIs to the mobile or third party developers. Documenting them is somewhat pain in the ass. We are trying to reduce the pain, atleast for in house projects where you don't have to expose your documentation to the world. YAAG generates simple bootstrap based API documentation without writing a single line of comments.</p>
+
+<h2>
+<a id="how-it-works-" class="anchor" href="#how-it-works-" aria-hidden="true"><span class="octicon octicon-link"></span></a>How it works ?</h2>
+
+<p>YAAG is a middleware. You have to add YAAG handler in your routes and you are done. Just go on calling your APIs using POSTMAN, Curl or from any client, and YAAG will keep on updating the API Doc html. (Note: We are also generating a json file containing data af all API calls)</p>
+
+<h2>
+<a id="how-to-use-with-basic-nethttp-package" class="anchor" href="#how-to-use-with-basic-nethttp-package" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to use with basic net.http package</h2>
+
+<ol>
+<li>Import github.com/betacraft/yaag/yaag</li>
+<li>Import github.com/betacraft/yaag/middleware</li>
+<li>Initialize yaag <code>yaag.Init(&amp;yaag.Config{On: true, DocTitle: "Core", DocPath: "apidoc.html"})</code>
+</li>
+<li>Use it in your handlers as <code>http.HandleFunc("/", middleware.HandleFunc(handler))</code>
+</li>
+</ol>
+
+<h4>
+<a id="sample-code" class="anchor" href="#sample-code" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sample code</h4>
+
+<div class="highlight highlight-source-go"><pre><span class="pl-k">func</span> <span class="pl-en">handler</span>(<span class="pl-v">w</span> <span class="pl-v">http</span>.<span class="pl-v">ResponseWriter</span>, <span class="pl-v">r</span> *<span class="pl-v">http</span>.<span class="pl-v">Request</span>) {
+  fmt.<span class="pl-c1">Fprintf</span>(w, <span class="pl-s"><span class="pl-pds">"</span>Hi there, I love <span class="pl-c1">%s</span>!<span class="pl-pds">"</span></span>, r.<span class="pl-smi">URL</span>.<span class="pl-smi">Path</span>[<span class="pl-c1">1</span>:])
+}
+
+<span class="pl-k">func</span> <span class="pl-en">main</span>() {
+  yaag.<span class="pl-c1">Init</span>(&amp;yaag.<span class="pl-smi">Config</span>{On: <span class="pl-c1">true</span>, DocTitle: <span class="pl-s"><span class="pl-pds">"</span>Core<span class="pl-pds">"</span></span>, DocPath: <span class="pl-s"><span class="pl-pds">"</span>apidoc.html<span class="pl-pds">"</span></span>, BaseUrls : <span class="pl-k">map</span>[<span class="pl-k">string</span>]<span class="pl-k">string</span>{<span class="pl-s"><span class="pl-pds">"</span>Production<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>Staging<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>} })
+  http.<span class="pl-c1">HandleFunc</span>(<span class="pl-s"><span class="pl-pds">"</span>/<span class="pl-pds">"</span></span>, middleware.<span class="pl-c1">HandleFunc</span>(handler))
+  http.<span class="pl-c1">ListenAndServe</span>(<span class="pl-s"><span class="pl-pds">"</span>:8080<span class="pl-pds">"</span></span>, <span class="pl-c1">nil</span>)
+}</pre></div>
+
+<h2>
+<a id="how-to-use-with-gorilla-mux" class="anchor" href="#how-to-use-with-gorilla-mux" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to use with Gorilla Mux</h2>
+
+<ol>
+<li>Import github.com/betacraft/yaag/yaag</li>
+<li>Import github.com/betacraft/yaag/middleware</li>
+<li>Initialize yaag <code>yaag.Init(&amp;yaag.Config{On: true, DocTitle: "Core", DocPath: "apidoc.html"})</code>
+</li>
+<li>Use it in your handlers as <code>r.HandleFunc("/", middleware.HandleFunc(handler))</code>
+</li>
+</ol>
+
+<h4>
+<a id="sample-code-1" class="anchor" href="#sample-code-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sample code</h4>
+
+<div class="highlight highlight-source-go"><pre><span class="pl-k">func</span> <span class="pl-en">handler</span>(<span class="pl-v">w</span> <span class="pl-v">http</span>.<span class="pl-v">ResponseWriter</span>, <span class="pl-v">r</span> *<span class="pl-v">http</span>.<span class="pl-v">Request</span>) {
+  fmt.<span class="pl-c1">Fprintf</span>(w, time.<span class="pl-c1">Now</span>().<span class="pl-c1">String</span>())
+}
+
+<span class="pl-k">func</span> <span class="pl-en">main</span>() {
+  yaag.<span class="pl-c1">Init</span>(&amp;yaag.<span class="pl-smi">Config</span>{On: <span class="pl-c1">true</span>, DocTitle: <span class="pl-s"><span class="pl-pds">"</span>Gorilla Mux<span class="pl-pds">"</span></span>, DocPath: <span class="pl-s"><span class="pl-pds">"</span>apidoc.html<span class="pl-pds">"</span></span>})
+  <span class="pl-smi">r</span> <span class="pl-k">:=</span> mux.<span class="pl-c1">NewRouter</span>()
+  r.<span class="pl-c1">HandleFunc</span>(<span class="pl-s"><span class="pl-pds">"</span>/<span class="pl-pds">"</span></span>, middleware.<span class="pl-c1">HandleFunc</span>(handler)) 
+  http.<span class="pl-c1">ListenAndServe</span>(<span class="pl-s"><span class="pl-pds">"</span>:8080<span class="pl-pds">"</span></span>, r)
+}</pre></div>
+
+<h2>
+<a id="how-to-use-with-martini" class="anchor" href="#how-to-use-with-martini" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to use with Martini</h2>
+
+<ol>
+<li>Import github.com/betacraft/yaag/yaag</li>
+<li>Import github.com/betacraft/yaag/martiniyaag</li>
+<li>Initialize yaag <code>yaag.Init(&amp;yaag.Config{On: true, DocTitle: "Core", DocPath: "apidoc.html"})</code>
+</li>
+<li>Add Yaag middleware like <code>m.Use(martiniyaag.Document)</code>
+</li>
+</ol>
+
+<h4>
+<a id="sample-code-2" class="anchor" href="#sample-code-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sample Code</h4>
+
+<div class="highlight highlight-source-go"><pre><span class="pl-k">func</span> <span class="pl-en">main</span>() {
+  yaag.<span class="pl-c1">Init</span>(&amp;yaag.<span class="pl-smi">Config</span>{On: <span class="pl-c1">true</span>, DocTitle: <span class="pl-s"><span class="pl-pds">"</span>Gorilla Mux<span class="pl-pds">"</span></span>, DocPath: <span class="pl-s"><span class="pl-pds">"</span>apidoc.html<span class="pl-pds">"</span></span>})
+  <span class="pl-smi">m</span> <span class="pl-k">:=</span> martini.<span class="pl-c1">Classic</span>()
+  m.<span class="pl-c1">Use</span>(martiniyaag.<span class="pl-smi">Document</span>)
+  m.<span class="pl-c1">Get</span>(<span class="pl-s"><span class="pl-pds">"</span>/<span class="pl-pds">"</span></span>, <span class="pl-c1">func</span>() <span class="pl-k">string</span> {
+    <span class="pl-k">return</span> <span class="pl-s"><span class="pl-pds">"</span>Hello world!<span class="pl-pds">"</span></span>
+  })
+  m.<span class="pl-c1">Run</span>()
+}</pre></div>
+
+<h2>
+<a id="how-to-use-with-revel" class="anchor" href="#how-to-use-with-revel" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to use with Revel</h2>
+
+<ol>
+<li>Add yaag.record = true in conf/app.conf (before starting to record the api calls)</li>
+<li>import github.com/betacraft/yaag/filters in app/init.go</li>
+<li>add 'filters.FilterForApiDoc' in revel.Filters</li>
+<li>Start recording Api calls</li>
+</ol>
+
+<h2>
+<a id="screenshots" class="anchor" href="#screenshots" aria-hidden="true"><span class="octicon octicon-link"></span></a>Screenshots</h2>
+
+<h4>
+<a id="api-doc-is-generated-based-on-the-paths" class="anchor" href="#api-doc-is-generated-based-on-the-paths" aria-hidden="true"><span class="octicon octicon-link"></span></a>API doc is generated based on the paths</h4>
+
+<p><img src="https://raw.github.com/betacraft/yaag/master/1.png" alt="alt first"></p>
+
+<h4>
+<a id="click-on-any-call-to-see-the-details-of-the-api" class="anchor" href="#click-on-any-call-to-see-the-details-of-the-api" aria-hidden="true"><span class="octicon octicon-link"></span></a>Click on any call to see the details of the API</h4>
+
+<p><img src="https://raw.github.com/betacraft/yaag/master/2.png" alt="alt second"></p>
+
+<h2>
+<a id="screencast" class="anchor" href="#screencast" aria-hidden="true"><span class="octicon octicon-link"></span></a>Screencast</h2>
+
+<p><a href="https://www.youtube.com/watch?v=dQWXxJn6_iE&amp;feature=youtu.be">YAAG ScreenCast</a></p>
+
+<h2>
+<a id="adding-support-for" class="anchor" href="#adding-support-for" aria-hidden="true"><span class="octicon octicon-link"></span></a>Adding Support for</h2>
+
+<ol>
+<li>Gin framework</li>
+</ol>
+
+<h2>
+<a id="team" class="anchor" href="#team" aria-hidden="true"><span class="octicon octicon-link"></span></a>Team</h2>
+
+<ul>
+<li>Aniket Awati (<a href="mailto:aniket@betacraft.co">aniket@betacraft.co</a>)</li>
+<li>Akshay Deo (<a href="mailto:akshay@betacraft.co">akshay@betacraft.co</a>)</li>
+<li>Kaustubh Deshmukh (<a href="mailto:kaustubh@betacraft.co">kaustubh@betacraft.co</a>)</li>
+</ul>
+
+<p>This project is initiated by Betacraft during GopherGala 2015.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/betacraft/yaag">Yaag</a> is maintained by <a href="https://github.com/betacraft">betacraft</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
