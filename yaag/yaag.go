@@ -5,12 +5,13 @@ package yaag
 
 import (
 	"encoding/json"
-	"github.com/betacraft/yaag/yaag/models"
 	"html/template"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
+
+	"github.com/betacraft/yaag/yaag/models"
 )
 
 var count int
@@ -108,13 +109,11 @@ func generateHtml() {
 	filePath, err := filepath.Abs(config.DocPath)
 	if err != nil {
 		panic("Error while creating file path : " + err.Error())
-		return
 	}
 	homeHtmlFile, err := os.Create(filePath)
 	defer homeHtmlFile.Close()
 	if err != nil {
 		panic("Error while creating documentation file : " + err.Error())
-		return
 	}
 	homeWriter := io.Writer(homeHtmlFile)
 	t.Execute(homeWriter, map[string]interface{}{"array": spec.ApiSpecs,
