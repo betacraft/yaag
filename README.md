@@ -38,7 +38,7 @@ func main() {
 ## How to use with Gorilla Mux
 1. Import github.com/betacraft/yaag/yaag
 2. Import github.com/betacraft/yaag/middleware
-3. Initialize yaag ```yaag.Init(&yaag.Config{On: true, DocTitle: "Core", DocPath: "apidoc.html"})```
+3. Initialize yaag ```yaag.Init(&yaag.Config{On: true, DocTitle: "Gorilla Mux", DocPath: "apidoc.html"})```
 4. Use it in your handlers as ```r.HandleFunc("/", middleware.HandleFunc(handler))```
 
 ####Sample code
@@ -60,14 +60,14 @@ func main() {
 
 1. Import github.com/betacraft/yaag/yaag
 2. Import github.com/betacraft/yaag/martiniyaag
-3. Initialize yaag ```yaag.Init(&yaag.Config{On: true, DocTitle: "Core", DocPath: "apidoc.html"})```
+3. Initialize yaag ```yaag.Init(&yaag.Config{On: true, DocTitle: "Martini", DocPath: "apidoc.html"})```
 4. Add Yaag middleware like ```m.Use(martiniyaag.Document)```
 
 ####Sample Code
 
 ```go
 func main() {
-  yaag.Init(&yaag.Config{On: true, DocTitle: "Gorilla Mux", DocPath: "apidoc.html"})
+  yaag.Init(&yaag.Config{On: true, DocTitle: "Martini", DocPath: "apidoc.html"})
   m := martini.Classic()
   m.Use(martiniyaag.Document)
   m.Get("/", func() string {
@@ -84,6 +84,33 @@ func main() {
 3. add 'filters.FilterForApiDoc' in revel.Filters
 4. Start recording Api calls
 
+## How to use with Gin
+
+1. Import github.com/betacraft/yaag/yaag
+2. Import github.com/betacraft/yaag/gin
+3. Initialize yaag ```yaag.Init(&yaag.Config(On: true, DocTile: "Gin", DocPath: "apidpc.html"))```
+4. Add yaag middleware like ```r.User(yaag_gin.Document())```
+
+####Sample Code
+
+```go
+import (
+    "net/http"
+    yaag_gin "github.com/betacraft/yaag/gin"
+    "github.com/betacraft/yaag/yaag"
+    "github.com/gin-gonic/gin"
+    )
+func main() {
+    r := gin.Default()
+    yaag.Init(&yaag.Config{On: true, DocTitle: "Gin", DocPath: "apidoc.html", BaseUrls: map[string]string{"Production": "", "Staging": ""}})
+    r.Use(yaag_gin.Document())
+    // use other middlewares ...
+    r.GET("/", func(c *gin.Context) {
+        c.String(http.StatusOK, "Hello World!")
+    })
+    r.Run(":8080")
+}
+```
 
 ## Screenshots
 
@@ -95,10 +122,6 @@ func main() {
 ## Screencast
 
 [YAAG ScreenCast](https://www.youtube.com/watch?v=dQWXxJn6_iE&feature=youtu.be)
-
-## Adding Support for
-
-1. Gin framework
 
 ## Team
 
