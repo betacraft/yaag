@@ -5,9 +5,7 @@ const Template = `<!DOCTYPE html>
 <head lang="en">
     <title> API Documentation </title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-    <script src="http://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
     <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.css">
     <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
@@ -20,6 +18,17 @@ const Template = `<!DOCTYPE html>
         .hidden {
             display:none;
         }
+        pre {
+            outline: 1px solid #ccc;
+            padding: 5px; margin: 5px;
+        }
+
+        .string { color: green; }
+        .number { color: darkorange; }
+        .boolean { color: blue; }
+        .null { color: magenta; }
+        .key { color: red; }
+
     </style>
     <style type="text/css">
         pre.prettyprint {
@@ -28,13 +37,33 @@ const Template = `<!DOCTYPE html>
             padding: 9.5px;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
     <script>
-        hljs.initHighlightingOnLoad();
-        function toggler(divId) {
-           $("#" + divId).toggle();
+        /* Thanks to http://stackoverflow.com/questions/4810841/how-can-i-pretty-print-json-using-javascript */
+        function syntaxHighlight(json) {
+            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                var cls = 'number';
+                if (/^"/.test(match)) {
+                    if (/:$/.test(match)) {
+                        cls = 'key';
+                    } else {
+                        cls = 'string';
+                    }
+                } else if (/true|false/.test(match)) {
+                    cls = 'boolean';
+                } else if (/null/.test(match)) {
+                    cls = 'null';
+                }
+                return '<span class="' + cls + '">' + match + '</span>';
+            });
+        }
+
+        function spaceJson(json){
+            var validJson = JSON.parse(json);
+            return JSON.stringify(validJson, undefined, 4);
         }
     </script>
+
 </head>
 <body>
 <nav class="navbar navbar-default navbar-fixed-top">
@@ -123,8 +152,17 @@ const Template = `<!DOCTYPE html>
                 </table>
                 {{ end }}
                 {{ if $wrapperValue.RequestBody }}
-                <p> <H4> Request Body </H4> </p>                
-                <pre class="prettyprint lang-json">{{ $wrapperValue.RequestBody }}</pre>
+                <p> <H4> Request Body </H4> </p>
+                <pre id="request-body" class="prettyprint">{{ $wrapperValue.RequestBody }}</pre>
+                <script>
+                /* Parse then stringify to add proper spacing */
+                    try {
+                        var jsonStr = spaceJson({{ $wrapperValue.RequestBody }});
+                        document.getElementById('request-body').innerHTML = syntaxHighlight(jsonStr);
+                    } catch (e) {
+                        /* Invalid JSON - Do not syntax highlight. */
+                    }
+                </script>
                 {{ end }}
                 <p><h4> Response Code</h4></p>
                 <pre class="prettyprint lang-json">{{ $wrapperValue.ResponseCode }}</pre>
@@ -145,13 +183,22 @@ const Template = `<!DOCTYPE html>
                 {{ end }}
                 {{ if $wrapperValue.ResponseBody }}
                 <p> <H4> Response Body </H4> </p>
-                <pre class="prettyprint lang-json">{{ $wrapperValue.ResponseBody }}</pre>
+                <pre class="prettyprint" id="response-body">{{ $wrapperValue.ResponseBody }}</pre>
+                <script>
+                    /* Parse then stringify to add proper spacing */
+                    try {
+                        var jsonStr = spaceJson({{ $wrapperValue.ResponseBody }});
+                        document.getElementById('response-body').innerHTML = syntaxHighlight(jsonStr);
+                    } catch (e) {
+                        /* Invalid JSON - Do not syntax highlight. */
+                    }
+                </script>
                 {{ end }}
                 <hr>
             {{ end }}
         </div>
         {{ end }}
-    </div>   
+    </div>
 </div>
 </div>
 <hr>
