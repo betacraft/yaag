@@ -9,6 +9,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
 	"net/http/httputil"
@@ -18,6 +19,9 @@ import (
 	"github.com/betacraft/yaag/yaag"
 	"github.com/betacraft/yaag/yaag/models"
 )
+
+/* 32 MB in memory max */
+const MaxInMemoryMultipartSize = 32000000
 
 var reqWriteExcludeHeaderDump = map[string]bool{
 	"Host":              true, // not in Header map anyway
@@ -72,7 +76,8 @@ func Before(apiCall *models.ApiCall, req *http.Request) {
 	val, ok := apiCall.RequestHeader["Content-Type"]
 	log.Println(val)
 	if ok {
-		switch strings.TrimSpace(apiCall.RequestHeader["Content-Type"]) {
+		ct := strings.TrimSpace(apiCall.RequestHeader["Content-Type"])
+		switch ct {
 		case "application/x-www-form-urlencoded":
 			fallthrough
 		case "application/json, application/x-www-form-urlencoded":
@@ -81,6 +86,10 @@ func Before(apiCall *models.ApiCall, req *http.Request) {
 		case "application/json":
 			log.Println("Reading body")
 			apiCall.RequestBody = *ReadBody(req)
+		default:
+			if strings.Contains(ct, "multipart/form-data") {
+				handleMultipart(apiCall, req)
+			}
 		}
 	}
 }
@@ -105,6 +114,20 @@ func printMap(m map[string]string) {
 	for key, value := range m {
 		log.Println(key, "=>", value)
 	}
+}
+
+func handleMultipart(apiCall *models.ApiCall, req *http.Request) {
+	apiCall.RequestHeader["Content-Type"] = "multipart/form-data"
+	req.ParseMultipartForm(MaxInMemoryMultipartSize)
+	apiCall.PostForm = ReadMultiPostForm(req.MultipartForm)
+}
+
+func ReadMultiPostForm(mpForm *multipart.Form) map[string]string {
+	postForm := map[string]string{}
+	for key, val := range mpForm.Value {
+		postForm[key] = val[0]
+	}
+	return postForm
 }
 
 func ReadPostForm(req *http.Request) map[string]string {
