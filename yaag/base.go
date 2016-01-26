@@ -153,14 +153,18 @@ const Template = `<!DOCTYPE html>
                 {{ end }}
                 {{ if $wrapperValue.RequestBody }}
                 <p> <H4> Request Body </H4> </p>
-                <pre id="request-body{{$key}}" class="prettyprint">{{ $wrapperValue.RequestBody }}</pre>
+                <pre id="request-body-{{$key}}-{{$wrapperKey}}" class="prettyprint">{{ $wrapperValue.RequestBody }}</pre>
                 <script>
-                /* Parse then stringify to add proper spacing */
-                    try {
-                        var jsonStr = spaceJson({{ $wrapperValue.RequestBody }});
-                        document.getElementById('request-body{{$key}}').innerHTML = syntaxHighlight(jsonStr);
-                    } catch (e) {
-                        /* Invalid JSON - Do not syntax highlight. */
+                    /* Parse then stringify to add proper spacing */
+                    var requestHeader ={{ $wrapperValue.RequestHeader }};
+
+                    if (requestHeader["Content-Type"] === "application/json"){
+                        try {
+                            var jsonStr = spaceJson({{ $wrapperValue.RequestBody }});
+                            document.getElementById('request-body{{$key}}-{{$wrapperKey}}').innerHTML = syntaxHighlight(jsonStr);
+                        } catch (e) {
+                            /* Invalid JSON - Do not syntax highlight. */
+                        }
                     }
                 </script>
                 {{ end }}
@@ -183,14 +187,18 @@ const Template = `<!DOCTYPE html>
                 {{ end }}
                 {{ if $wrapperValue.ResponseBody }}
                 <p> <H4> Response Body </H4> </p>
-                <pre class="prettyprint" id="response-body{{$key}}">{{ $wrapperValue.ResponseBody }}</pre>
+                <pre class="prettyprint" id="response-body-{{$key}}-{{$wrapperKey}}">{{ $wrapperValue.ResponseBody }}</pre>
                 <script>
                     /* Parse then stringify to add proper spacing */
-                    try {
-                        var jsonStr = spaceJson({{ $wrapperValue.ResponseBody }});
-                        document.getElementById('response-body{{$key}}').innerHTML = syntaxHighlight(jsonStr);
-                    } catch (e) {
-                        /* Invalid JSON - Do not syntax highlight. */
+                    var responseHeader ={{ $wrapperValue.ResponseHeader }};
+
+                    if (responseHeader["Content-Type"] === "application/json"){
+                        try {
+                            var jsonStr = spaceJson({{ $wrapperValue.ResponseBody }});
+                            document.getElementById('response-body-{{$key}}-{{$wrapperKey}}').innerHTML = syntaxHighlight(jsonStr);
+                        } catch (e) {
+                            /* Invalid JSON - Do not syntax highlight. */
+                        }
                     }
                 </script>
                 {{ end }}
