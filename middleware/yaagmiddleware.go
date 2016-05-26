@@ -100,12 +100,13 @@ func ReadQueryParams(req *http.Request) map[string]string {
 	if err != nil {
 		return params
 	}
-	for _, param := range strings.Split(u.Query().Encode(), "&") {
-		value := strings.Split(param, "=")
-		if len(value) < 2 {
+	for k, v := range u.Query() {
+		if len(v) < 1 {
 			continue
 		}
-		params[value[0]] = value[1]
+		// TODO: v is a list, and we should be showing a list of values
+		// rather than assuming a single value always, gotta change this
+		params[k] = v[0]
 	}
 	return params
 }
