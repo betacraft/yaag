@@ -158,10 +158,10 @@ const Template = `<!DOCTYPE html>
                     /* Parse then stringify to add proper spacing */
                     var requestHeader ={{ $wrapperValue.RequestHeader }};
 
-                    if (requestHeader["Content-Type"] === "application/json"){
+                    if (requestHeader["Content-Type"].includes("application/json")){
                         try {
                             var jsonStr = spaceJson({{ $wrapperValue.RequestBody }});
-                            document.getElementById('request-body{{$key}}-{{$wrapperKey}}').innerHTML = syntaxHighlight(jsonStr);
+                            document.getElementById('request-body-{{$key}}-{{$wrapperKey}}').innerHTML = syntaxHighlight(jsonStr);
                         } catch (e) {
                             /* Invalid JSON - Do not syntax highlight. */
                         }
@@ -192,7 +192,7 @@ const Template = `<!DOCTYPE html>
                     /* Parse then stringify to add proper spacing */
                     var responseHeader ={{ $wrapperValue.ResponseHeader }};
 
-                    if (responseHeader["Content-Type"] === "application/json"){
+                    if (responseHeader["Content-Type"].includes("application/json")){
                         try {
                             var jsonStr = spaceJson({{ $wrapperValue.ResponseBody }});
                             document.getElementById('response-body-{{$key}}-{{$wrapperKey}}').innerHTML = syntaxHighlight(jsonStr);
