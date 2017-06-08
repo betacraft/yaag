@@ -98,7 +98,7 @@ import (
     "net/http"
     yaag_gin "github.com/betacraft/yaag/gin"
     "github.com/betacraft/yaag/yaag"
-    "github.com/gin-gonic/gin"
+    "gopkg.in/gin-gonic/gin.v1"
     )
 func main() {
     r := gin.Default()
