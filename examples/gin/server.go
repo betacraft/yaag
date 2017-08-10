@@ -5,7 +5,7 @@ import (
 
 	yaag_gin "github.com/betacraft/yaag/gin"
 	"github.com/betacraft/yaag/yaag"
-	"gopkg.in/gin-gonic/gin.v1"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
