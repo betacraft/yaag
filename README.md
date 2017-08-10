@@ -21,7 +21,7 @@ YAAG is a middleware. You have to add YAAG handler in your routes and you are do
 3. Initialize yaag ```yaag.Init(&yaag.Config{On: true, DocTitle: "Core", DocPath: "apidoc.html"})```
 4. Use it in your handlers as ```http.HandleFunc("/", middleware.HandleFunc(handler))```
 
-####Sample code
+#### Sample code
 
 ```go
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -41,7 +41,7 @@ func main() {
 3. Initialize yaag ```yaag.Init(&yaag.Config{On: true, DocTitle: "Gorilla Mux", DocPath: "apidoc.html"})```
 4. Use it in your handlers as ```r.HandleFunc("/", middleware.HandleFunc(handler))```
 
-####Sample code
+#### Sample code
 
 ```go
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -63,7 +63,7 @@ func main() {
 3. Initialize yaag ```yaag.Init(&yaag.Config{On: true, DocTitle: "Martini", DocPath: "apidoc.html"})```
 4. Add Yaag middleware like ```m.Use(martiniyaag.Document)```
 
-####Sample Code
+#### Sample Code
 
 ```go
 func main() {
@@ -91,7 +91,7 @@ func main() {
 3. Initialize yaag ```yaag.Init(&yaag.Config(On: true, DocTile: "Gin", DocPath: "apidpc.html"))```
 4. Add yaag middleware like ```r.User(yaag_gin.Document())```
 
-####Sample Code
+#### Sample Code
 
 ```go
 import (
