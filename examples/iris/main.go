@@ -47,7 +47,7 @@ func main() {
 	// Write tests that calls those handlers, save the generated "apidoc.html".
 	// Turn off the yaag middleware when in production.
 	//
-	// Usage:
+	// Example usage:
 	// Visit all paths and open the generated "apidoc.html" file to see the API's automated docs.
 	app.Run(iris.Addr(":8080"))
 }
