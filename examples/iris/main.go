@@ -40,8 +40,14 @@ func main() {
 		ctx.JSON(context.Map{"value": value})
 	})
 
-	// Run our HTTP Server,
-	// create & run your test files as documentation notes
-	// and open the generated "apidoc.html" file to see the API's automated docs.
+	// Run our HTTP Server.
+	//
+	// Note that on each incoming request the yaag will generate and update the "apidoc.html".
+	// Recommentation:
+	// Write tests that calls those handlers, save the generated "apidoc.html".
+	// Turn off the yaag middleware when in production.
+	//
+	// Usage:
+	// Visit all paths and open the generated "apidoc.html" file to see the API's automated docs.
 	app.Run(iris.Addr(":8080"))
 }
