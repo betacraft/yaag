@@ -7,12 +7,11 @@ import (
 	"github.com/betacraft/yaag/yaag"
 	"github.com/betacraft/yaag/yaag/models"
 
-	"github.com/kataras/iris"
-	"github.com/kataras/iris/context" // optionally after go 1.9
+	"github.com/kataras/iris/context" // after go 1.9, users can use iris package directly.
 )
 
 // New returns a new yaag iris-compatible handler which is responsible to generate the rest API.
-func New() iris.Handler {
+func New() context.Handler {
 	return func(ctx context.Context) {
 		if !yaag.IsOn() {
 			// execute the main handler and exit if yaag is off.
