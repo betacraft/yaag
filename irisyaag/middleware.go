@@ -22,16 +22,19 @@ func New() context.Handler {
 		// prepare the middleware.
 		apiCall := &models.ApiCall{}
 		middleware.Before(apiCall, ctx.Request())
-		// fire the "main" handler.
+
+		// start the recorder instead of raw response writer,
+		// response writer is changed for that handler now.
+		ctx.Record()
+		// and then fire the "main" handler.
 		ctx.Next()
 
 		if statusCode := ctx.GetStatusCode(); statusCode != 404 {
 			apiCall.MethodType = ctx.Method()
 			apiCall.CurrentPath = strings.Split(ctx.Request().RequestURI, "?")[0]
-			// we could use the response recorder built'n inside Iris but better keep that empty,
-			// most users don't need that, it's aligned with other middlewares as well.
-			apiCall.ResponseBody = ""
 			apiCall.ResponseCode = statusCode
+			apiCall.RequestUrlParams = ctx.URLParams()
+			apiCall.ResponseBody = string(ctx.Recorder().Body())
 			// copy resp headers.
 			headers := map[string]string{}
 			for k, v := range ctx.ResponseWriter().Header() {
