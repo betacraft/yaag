@@ -196,24 +196,25 @@ func ReadBody(req *http.Request) *string {
 	return &body
 }
 
-func After(apiCall *models.ApiCall, writer *httptest.ResponseRecorder, w http.ResponseWriter, r *http.Request) {
+func After(apiCall *models.ApiCall, record *httptest.ResponseRecorder, output http.ResponseWriter, r *http.Request) {
 	if strings.Contains(r.RequestURI, ".ico") {
-		fmt.Fprintf(w, writer.Body.String())
+		fmt.Fprintf(output, record.Body.String())
 		return
 	}
-	if writer.Code != 404 {
-		apiCall.MethodType = r.Method
-		apiCall.CurrentPath = strings.Split(r.RequestURI, "?")[0]
-		apiCall.ResponseBody = writer.Body.String()
-		apiCall.ResponseCode = writer.Code
-		apiCall.ResponseHeader = ReadHeadersFromResponse(writer)
+
+	apiCall.MethodType = r.Method
+	apiCall.CurrentPath = strings.Split(r.RequestURI, "?")[0]
+	apiCall.ResponseBody = record.Body.String()
+	apiCall.ResponseCode = record.Code
+	apiCall.ResponseHeader = ReadHeadersFromResponse(record)
+	if record.Code != 404 {
 		go yaag.GenerateHtml(apiCall)
 	}
 	for key, value := range apiCall.ResponseHeader {
-		w.Header().Add(key, value)
+		output.Header().Add(key, value)
 	}
-	w.WriteHeader(writer.Code)
-	w.Write(writer.Body.Bytes())
+	output.WriteHeader(record.Code)
+	output.Write(record.Body.Bytes())
 }
 
 // One of the copies, say from b to r2, could be avoided by using a more
