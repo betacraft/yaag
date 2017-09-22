@@ -89,6 +89,9 @@ func Before(apiCall *models.ApiCall, req *http.Request) {
 		default:
 			if strings.Contains(ct, "multipart/form-data") {
 				handleMultipart(apiCall, req)
+			} else {
+				log.Println("Reading body")
+				apiCall.RequestBody = *ReadBody(req)
 			}
 		}
 	}
@@ -133,7 +136,6 @@ func ReadMultiPostForm(mpForm *multipart.Form) map[string]string {
 
 func ReadPostForm(req *http.Request) map[string]string {
 	postForm := map[string]string{}
-	log.Println("", *ReadBody(req))
 	for _, param := range strings.Split(*ReadBody(req), "&") {
 		value := strings.Split(param, "=")
 		postForm[value[0]] = value[1]
@@ -203,7 +205,7 @@ func After(apiCall *models.ApiCall, record *httptest.ResponseRecorder, output ht
 	}
 
 	apiCall.MethodType = r.Method
-	apiCall.CurrentPath = strings.Split(r.RequestURI, "?")[0]
+	apiCall.CurrentPath = r.URL.Path
 	apiCall.ResponseBody = record.Body.String()
 	apiCall.ResponseCode = record.Code
 	apiCall.ResponseHeader = ReadHeadersFromResponse(record)
