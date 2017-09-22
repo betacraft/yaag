@@ -27,6 +27,11 @@ func IsOn() bool {
 func Init(conf *Config) {
 	config = conf
 	// load the config file
+	if conf.DocPath == "" {
+		conf.DocPath = "apidoc.html"
+	}
+
+
 	filePath, err := filepath.Abs(conf.DocPath + ".json")
 	dataFile, err := os.Open(filePath)
 	defer dataFile.Close()

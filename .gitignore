@@ -6,3 +6,6 @@ examples/core/server
 */*.iml
 .idea/*
 examples/*.html
+examples/*/*.html
+examples/*.json
+examples/*/*.json
