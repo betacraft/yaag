@@ -7,4 +7,5 @@ examples/core/server
 .idea/*
 examples/*.html
 examples/*/*.html
+examples/*.json
 examples/*/*.json

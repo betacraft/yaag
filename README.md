@@ -84,6 +84,39 @@ func main() {
 3. add 'filters.FilterForApiDoc' in revel.Filters
 4. Start recording Api calls
 
+### Sample Code
+
+```go
+func init() {
+	// Filters is the default set of global filters.
+	revel.Filters = []revel.Filter{
+		filters.FilterForApiDoc,       // This enables yaag to record apicalls
+		revel.PanicFilter,             // Recover from panics and display an error page instead.
+		revel.RouterFilter,            // Use the routing table to select the right Action
+		revel.FilterConfiguringFilter, // A hook for adding or removing per-Action filters.
+		revel.ParamsFilter,            // Parse parameters into Controller.Params.
+		revel.SessionFilter,           // Restore and write the session cookie.
+		revel.FlashFilter,             // Restore and write the flash cookie.
+		revel.ValidationFilter,        // Restore kept validation errors and save new ones from cookie.
+		revel.I18nFilter,              // Resolve the requested language
+		HeaderFilter,                  // Add some security based headers
+		revel.InterceptorFilter,       // Run interceptors around the action.
+		revel.CompressFilter,          // Compress the result.
+		revel.ActionInvoker,           // Invoke the action.
+	}
+
+	revel.OnAppStart(func() {
+		yaag.Init(&yaag.Config{ // <- IMPORTANT, init the middleware.
+			On:       true,
+			DocTitle: "Revel",
+			DocPath:  "examples/revel/apidoc.html",
+			BaseUrls: map[string]string{"Production": "", "Staging": ""},
+		})
+	})
+}
+```
+
+
 ## How to use with Gin
 
 1. Import github.com/betacraft/yaag/yaag
