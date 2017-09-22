@@ -194,7 +194,6 @@ func main() {
 
 * Aniket Awati (aniket@betacraft.co)
 * Akshay Deo (akshay@betacraft.co)
-* Kaustubh Deshmukh (kaustubh@betacraft.co)
 * Brian Newsom (Brian.Newsom@Colorado.edu)
 
 This project is initiated by Betacraft during GopherGala 2015.
