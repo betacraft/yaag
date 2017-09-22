@@ -34,6 +34,12 @@ func Init(conf *Config) {
 		json.NewDecoder(io.Reader(dataFile)).Decode(spec)
 		generateHtml()
 	}
+
+	if conf.RootPath != "" {
+		ParseAnnotations(conf.RootPath)
+		generatejson()
+	}
+
 }
 
 func add(x, y int) int {
@@ -77,6 +83,11 @@ func GenerateHtml(apiCall *models.ApiCall) {
 		apiSpec.Calls = append(apiSpec.Calls, *apiCall)
 		spec.ApiSpecs = append(spec.ApiSpecs, apiSpec)
 	}
+	generatejson()
+	generateHtml()
+}
+
+func generatejson()  {
 	filePath, err := filepath.Abs(config.DocPath)
 	dataFile, err := os.Create(filePath + ".json")
 	if err != nil {
@@ -94,7 +105,6 @@ func GenerateHtml(apiCall *models.ApiCall) {
 		log.Println(err)
 		return
 	}
-	generateHtml()
 }
 
 func generateHtml() {

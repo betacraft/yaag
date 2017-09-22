@@ -7,4 +7,5 @@ type Config struct {
 
 	DocTitle string
 	DocPath  string
+	RootPath string
 }
