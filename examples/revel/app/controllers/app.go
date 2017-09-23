@@ -16,4 +16,3 @@ func (c App) Index() revel.Result {
 func (c App) Hello(name string) revel.Result {
 	return c.RenderText(fmt.Sprintf("Hello %s good to see you", name))
 }
-

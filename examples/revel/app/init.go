@@ -36,7 +36,7 @@ func init() {
 		yaag.Init(&yaag.Config{ // <- IMPORTANT, init the middleware.
 			On:       true,
 			DocTitle: "Revel",
-			DocPath:  "apidoc.html",
+			DocPath:  "examples/revel/apidoc.html",
 			BaseUrls: map[string]string{"Production": "", "Staging": ""},
 		})
 	})
