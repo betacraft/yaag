@@ -129,7 +129,7 @@ func init() {
 ```go
 import (
     "net/http"
-    yaag_gin "github.com/betacraft/yaag/gin"
+    yaag_gin "github.com/betacraft/yaag/gin/v1"
     "github.com/betacraft/yaag/yaag"
     "gopkg.in/gin-gonic/gin.v1"
     )
@@ -144,6 +144,28 @@ func main() {
     r.Run(":8080")
 }
 ```
+
+### Using github for gin dependency 
+
+```go
+import (
+    "net/http"
+    yaag_gin "github.com/betacraft/yaag/gin"
+    "github.com/betacraft/yaag/yaag"
+    "github.com/gin-gonic/gin"
+    )
+func main() {
+    r := gin.Default()
+    yaag.Init(&yaag.Config{On: true, DocTitle: "Gin", DocPath: "apidoc.html", BaseUrls: map[string]string{"Production": "", "Staging": ""}})
+    r.Use(yaag_gin.Document())
+    // use other middlewares ...
+    r.GET("/", func(c *gin.Context) {
+        c.String(http.StatusOK, "Hello World!")
+    })
+    r.Run(":8080")
+}
+```
+
 
 ## How to use with Iris
 
