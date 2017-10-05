@@ -135,3 +135,11 @@ func deleteCommonHeaders(call *models.ApiCall) {
 	delete(call.RequestHeader, "Origin")
 	delete(call.RequestHeader, "User-Agent")
 }
+
+func IsStatusCodeValid(code int) bool  {
+	if code > 200 && code < 300 {
+		return true
+	} else {
+		return false
+	}
+}

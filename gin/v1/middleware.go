@@ -2,7 +2,6 @@ package gin
 
 import (
 	"log"
-	"net/http/httptest"
 	"strings"
 
 	"github.com/betacraft/yaag/middleware"
@@ -16,11 +15,10 @@ func Document() gin.HandlerFunc {
 		if !yaag.IsOn() {
 			return
 		}
-		writer := httptest.NewRecorder()
 		apiCall := models.ApiCall{}
 		middleware.Before(&apiCall, c.Request)
 		c.Next()
-		if writer.Code != 404 {
+		if yaag.IsStatusCodeValid(c.Writer.Status()) {
 			apiCall.MethodType = c.Request.Method
 			apiCall.CurrentPath = strings.Split(c.Request.RequestURI, "?")[0]
 			apiCall.ResponseBody = ""
