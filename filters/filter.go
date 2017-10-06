@@ -72,6 +72,9 @@ func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
 	fc[0](c, fc[1:])
 
 	c.Result.Apply(c.Request, c.Response)
+	if !yaag.IsStatusCodeValid(c.Response.Status) {
+		return
+	}
 	htmlValues := models.ApiCall{}
 	htmlValues.CommonRequestHeaders = make(map[string]string)
 	// get headers

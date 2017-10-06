@@ -209,7 +209,7 @@ func After(apiCall *models.ApiCall, record *httptest.ResponseRecorder, output ht
 	apiCall.ResponseBody = record.Body.String()
 	apiCall.ResponseCode = record.Code
 	apiCall.ResponseHeader = ReadHeadersFromResponse(record)
-	if record.Code != 404 {
+	if yaag.IsStatusCodeValid(record.Code) {
 		go yaag.GenerateHtml(apiCall)
 	}
 	for key, value := range apiCall.ResponseHeader {
