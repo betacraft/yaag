@@ -137,7 +137,7 @@ func deleteCommonHeaders(call *models.ApiCall) {
 }
 
 func IsStatusCodeValid(code int) bool  {
-	if code > 200 && code < 300 {
+	if code >= 200 && code < 300 {
 		return true
 	} else {
 		return false
