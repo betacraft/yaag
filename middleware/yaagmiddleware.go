@@ -5,13 +5,11 @@ package middleware
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
 	"mime/multipart"
 	"net/http"
-	"net/http/httptest"
 	"net/http/httputil"
 	"net/url"
 	"strings"
@@ -49,25 +47,25 @@ func (y *YaagHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		y.nextHandler.ServeHTTP(w, r)
 		return
 	}
-	writer := httptest.NewRecorder()
+	writer := NewResponseRecorder(w)
 	apiCall := models.ApiCall{}
 	Before(&apiCall, r)
 	y.nextHandler.ServeHTTP(writer, r)
-	After(&apiCall, writer, w, r)
+	After(&apiCall, writer, r)
 }
 
-func HandleFunc(next func(http.ResponseWriter, *http.Request)) func(http.ResponseWriter, *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
+func HandleFunc(next func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !yaag.IsOn() {
 			next(w, r)
 			return
 		}
 		apiCall := models.ApiCall{}
-		writer := httptest.NewRecorder()
+		writer := NewResponseRecorder(w)
 		Before(&apiCall, r)
 		next(writer, r)
-		After(&apiCall, writer, w, r)
-	}
+		After(&apiCall, writer, r)
+	})
 }
 
 func Before(apiCall *models.ApiCall, req *http.Request) {
@@ -160,9 +158,9 @@ func ReadHeaders(req *http.Request) map[string]string {
 	return headers
 }
 
-func ReadHeadersFromResponse(writer *httptest.ResponseRecorder) map[string]string {
+func ReadHeadersFromResponse(header http.Header) map[string]string {
 	headers := map[string]string{}
-	for k, v := range writer.Header() {
+	for k, v := range header {
 		log.Println(k, v)
 		headers[k] = strings.Join(v, " ")
 	}
@@ -198,25 +196,18 @@ func ReadBody(req *http.Request) *string {
 	return &body
 }
 
-func After(apiCall *models.ApiCall, record *httptest.ResponseRecorder, output http.ResponseWriter, r *http.Request) {
-	if strings.Contains(r.RequestURI, ".ico") {
-		fmt.Fprintf(output, record.Body.String())
+func After(apiCall *models.ApiCall, record *responseRecorder, r *http.Request) {
+	if strings.Contains(r.RequestURI, ".ico") || !yaag.IsOn(){
 		return
 	}
-
 	apiCall.MethodType = r.Method
 	apiCall.CurrentPath = r.URL.Path
 	apiCall.ResponseBody = record.Body.String()
-	apiCall.ResponseCode = record.Code
-	apiCall.ResponseHeader = ReadHeadersFromResponse(record)
-	if yaag.IsStatusCodeValid(record.Code) {
+	apiCall.ResponseCode = record.Status
+	apiCall.ResponseHeader = ReadHeadersFromResponse(record.Header())
+	if yaag.IsStatusCodeValid(record.Status) {
 		go yaag.GenerateHtml(apiCall)
 	}
-	for key, value := range apiCall.ResponseHeader {
-		output.Header().Add(key, value)
-	}
-	output.WriteHeader(record.Code)
-	output.Write(record.Body.Bytes())
 }
 
 // One of the copies, say from b to r2, could be avoided by using a more

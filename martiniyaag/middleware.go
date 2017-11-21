@@ -6,7 +6,6 @@ import (
 	"github.com/betacraft/yaag/yaag/models"
 	"github.com/go-martini/martini"
 	"net/http"
-	"net/http/httptest"
 )
 
 func Document(c martini.Context, w http.ResponseWriter, r *http.Request) {
@@ -15,9 +14,9 @@ func Document(c martini.Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	apiCall := models.ApiCall{}
-	writer := httptest.NewRecorder()
+	writer := middleware.NewResponseRecorder(w)
 	c.MapTo(writer, (*http.ResponseWriter)(nil))
 	middleware.Before(&apiCall, r)
 	c.Next()
-	middleware.After(&apiCall, writer, w, r)
+	middleware.After(&apiCall, writer,  r)
 }

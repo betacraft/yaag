@@ -1,8 +1,6 @@
 package middleware
 
 import (
-	"net/http/httptest"
-
 	"github.com/betacraft/yaag/middleware"
 	"github.com/betacraft/yaag/yaag"
 	"github.com/betacraft/yaag/yaag/models"
@@ -17,13 +15,11 @@ func Yaag() echo.MiddlewareFunc {
 			}
 
 			apiCall := models.ApiCall{}
-			writer := httptest.NewRecorder()
-			oldWriter := c.Response().Writer
+			writer := middleware.NewResponseRecorder(c.Response().Writer)
 			c.Response().Writer = writer
 			middleware.Before(&apiCall, c.Request())
 			err := next(c)
-			c.Response().Writer = oldWriter
-			middleware.After(&apiCall, writer, c.Response(), c.Request())
+			middleware.After(&apiCall, writer, c.Request())
 			return err
 		})
 	})

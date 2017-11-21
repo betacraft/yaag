@@ -6,7 +6,6 @@ import (
 	"github.com/betacraft/yaag/yaag/models"
 
 	"github.com/kataras/iris/context" // after go 1.9, users can use iris package directly.
-	"net/http/httptest"
 	"bytes"
 )
 
@@ -29,14 +28,13 @@ func New() context.Handler {
 		// and then fire the "main" handler.
 		ctx.Next()
 
-		//iris recorder is not httptest.ResponseRecorder! So need to map it.
-		r := httptest.NewRecorder()
+		//iris recorder is not http.ResponseWriter! So need to map it.
+		r := middleware.NewResponseRecorder(ctx.Recorder().Naive())
 		r.Body = bytes.NewBuffer(ctx.Recorder().Body())
-		r.HeaderMap = ctx.Recorder().Header()
-		r.Code = ctx.Recorder().StatusCode()
+		r.Status = ctx.Recorder().StatusCode()
 
 		//iris recorder writes the recorded data to its original response recorder. So pass the testrecorder
 		// as responsewriter to after call.
-		middleware.After(apiCall, r, r , ctx.Request())
+		middleware.After(apiCall, r, ctx.Request())
 	}
 }
