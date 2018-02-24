@@ -14,8 +14,8 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/betacraft/yaag/yaag"
-	"github.com/betacraft/yaag/yaag/models"
+	"github.com/CoryARamirez/yaag/yaag"
+	"github.com/CoryARamirez/yaag/yaag/models"
 )
 
 /* 32 MB in memory max */
