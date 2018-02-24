@@ -3,8 +3,8 @@ package main
 import (
 	"net/http"
 
-	yaag_gin "github.com/betacraft/yaag/gin"
-	"github.com/betacraft/yaag/yaag"
+	yaag_gin "github.com/CoryARamirez/yaag/gin"
+	"github.com/CoryARamirez/yaag/yaag"
 	"github.com/gin-gonic/gin"
 )
 

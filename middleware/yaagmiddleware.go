@@ -14,8 +14,8 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/betacraft/yaag/yaag"
-	"github.com/betacraft/yaag/yaag/models"
+	"github.com/CoryARamirez/yaag/yaag"
+	"github.com/CoryARamirez/yaag/yaag/models"
 )
 
 /* 32 MB in memory max */
@@ -77,9 +77,6 @@ func Before(apiCall *models.ApiCall, req *http.Request) {
 		ct := strings.TrimSpace(apiCall.RequestHeader["Content-Type"])
 		switch ct {
 		case "application/x-www-form-urlencoded":
-			fallthrough
-		case "application/json, application/x-www-form-urlencoded":
-			log.Println("Reading form")
 			apiCall.PostForm = ReadPostForm(req)
 		case "application/json":
 			log.Println("Reading body")

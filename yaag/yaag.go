@@ -11,7 +11,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/betacraft/yaag/yaag/models"
+	"github.com/CoryARamirez/yaag/yaag/models"
 )
 
 var count int
