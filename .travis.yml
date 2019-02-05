@@ -3,7 +3,7 @@ language: go
 go:
   - 1.11
 
-script: script:
-          - env GO111MODULE=on cd yaag && go build
-          - env GO111MODULE=on cd yaag && go test
+script:
+      - env GO111MODULE=on cd yaag && go build
+      - env GO111MODULE=on cd yaag && go test
 
