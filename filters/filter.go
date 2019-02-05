@@ -19,20 +19,21 @@ func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
 		fc[0](c, fc[1:])
 		return
 	}
-
+	rawrequest := c.Request.In.GetRaw().(*http.Request)
 	w := httptest.NewRecorder()
-	c.Response = revel.NewResponse(w)
+	goresponse := c.Response.Out.Server.(*revel.GoResponse)
+	goresponse.SetResponse(w)
 	httpVerb := c.Request.Method
 	customParams := make(map[string]interface{})
 	headers := make(map[string]string)
 	hasJson := false
 	hasXml := false
-	r := Route(c.Request.Request)
+	r := Route(rawrequest)
 	path := c.Request.URL.Path
 	if r != nil {
 		path = r.Path
 	}
-	body := middleware.ReadBody(c.Request.Request)
+	body := middleware.ReadBody(rawrequest)
 	if c.Request.ContentType == "application/json" {
 		if httpVerb == "POST" || httpVerb == "PUT" || httpVerb == "PATCH" {
 			err := json.Unmarshal([]byte(*body), &customParams)
@@ -78,7 +79,7 @@ func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
 	htmlValues := models.ApiCall{}
 	htmlValues.CommonRequestHeaders = make(map[string]string)
 	// get headers
-	for k, v := range c.Request.Header {
+	for k, v := range rawrequest.Header {
 		isCommon := false
 		for _, hk := range yaag.CommonHeaders {
 			if k == hk {
