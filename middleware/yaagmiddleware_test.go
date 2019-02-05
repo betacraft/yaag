@@ -59,7 +59,7 @@ func TestAfterSetContentType(t *testing.T) {
 		After(apiCall, outputRecorder, request)
 
 		if outputRecorder.Status != test.code {
-			t.Errorf("expected code to be %d, was %s", test.code, outputRecorder.Status)
+			t.Errorf("expected code to be %d, was %d", test.code, outputRecorder.Status)
 		}
 
 		contentType := outputRecorder.Header().Get(test.contentTypeKey)
@@ -101,10 +101,9 @@ func TestWithWebsocketUpgrade(t *testing.T) {
 	}
 	_, message, err := c.ReadMessage()
 	if err != nil {
-		t.Fatalf("read:", err)
+		t.Fatalf("read: %s", err)
 		return
 	}
-	t.Log("recv: %s", message)
 	if string(message) != "hello\n" {
 		t.Fatal("Message doesn't match")
 	}
