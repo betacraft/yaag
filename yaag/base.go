@@ -3,6 +3,7 @@ package yaag
 const Template = `<!DOCTYPE html>
 <html>
 <head lang="en">
+    <meta charset="UTF-8">
     <title> API Documentation </title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
