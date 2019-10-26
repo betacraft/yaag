@@ -2,8 +2,7 @@
 package main
 
 import (
-	"github.com/kataras/iris"
-	"github.com/kataras/iris/context"
+	"github.com/kataras/iris/v12"
 
 	"github.com/betacraft/yaag/yaag"
 	"github.com/betacraft/yaag/irisyaag"
@@ -31,30 +30,30 @@ func newApp() *iris.Application {
 
 	app.Use(irisyaag.New()) // <- IMPORTANT, register the middleware.
 
-	app.Get("/json", func(ctx context.Context) {
-		ctx.JSON(context.Map{"result": "Hello World!"})
+	app.Get("/json", func(ctx iris.Context) {
+		ctx.JSON(iris.Map{"result": "Hello World!"})
 	})
 
-	app.Get("/plain", func(ctx context.Context) {
+	app.Get("/plain", func(ctx iris.Context) {
 		ctx.Text("Hello World!")
 	})
 
-	app.Get("/xml", func(ctx context.Context) {
+	app.Get("/xml", func(ctx iris.Context) {
 		ctx.XML(myXML{Result: "Hello World!"})
 	})
 
-	app.Get("/complex", func(ctx context.Context) {
+	app.Get("/complex", func(ctx iris.Context) {
 		value := ctx.URLParam("key")
-		ctx.JSON(context.Map{"value": value})
+		ctx.JSON(iris.Map{"value": value})
 	})
 
-	app.Post("/reqbody", func(ctx context.Context) {
+	app.Post("/reqbody", func(ctx iris.Context) {
 		var model myModel
 		ctx.ReadJSON(&model)
 		ctx.Writef(model.Username)
 	})
 
-	app.Post("/hello", func(ctx context.Context) {
+	app.Post("/hello", func(ctx iris.Context) {
 		username := ctx.FormValue("username")
 		ctx.Writef("Hello %s", username)
 	})
