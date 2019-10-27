@@ -1,12 +1,13 @@
 package irisyaag
 
 import (
+	"bytes"
+
+	"github.com/kataras/iris/v12/context" // after go 1.9, users can use iris package directly.
+
 	"github.com/betacraft/yaag/middleware"
 	"github.com/betacraft/yaag/yaag"
 	"github.com/betacraft/yaag/yaag/models"
-
-	"github.com/kataras/iris/context" // after go 1.9, users can use iris package directly.
-	"bytes"
 )
 
 // New returns a new yaag iris-compatible handler which is responsible to generate the rest API.

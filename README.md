@@ -218,7 +218,7 @@ func main() {
 
   app.Get("/complex", func(ctx context.Context) {
     value := ctx.URLParam("key")
-    ctx.JSON(context.Map{"value": value})
+    ctx.JSON(iris.Map{"value": value})
   })
 
   // Run our HTTP Server.
