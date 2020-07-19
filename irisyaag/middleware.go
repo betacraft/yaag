@@ -1,18 +1,17 @@
 package irisyaag
 
 import (
-	"bytes"
-
-	"github.com/kataras/iris/v12/context" // after go 1.9, users can use iris package directly.
+	"strings"
 
 	"github.com/betacraft/yaag/middleware"
 	"github.com/betacraft/yaag/yaag"
 	"github.com/betacraft/yaag/yaag/models"
+	"github.com/kataras/iris/v12"
 )
 
 // New returns a new yaag iris-compatible handler which is responsible to generate the rest API.
-func New() context.Handler {
-	return func(ctx context.Context) {
+func New() iris.Handler {
+	return func(ctx iris.Context) {
 		if !yaag.IsOn() {
 			// execute the main handler and exit if yaag is off.
 			ctx.Next()
@@ -23,19 +22,22 @@ func New() context.Handler {
 		apiCall := &models.ApiCall{}
 		middleware.Before(apiCall, ctx.Request())
 
-		// start the recorder instead of raw response writer,
-		// response writer is changed for that handler now.
-		ctx.Record()
-		// and then fire the "main" handler.
+		w := ctx.Recorder() // starts recorder, if not already started and returns the writer.
 		ctx.Next()
 
-		//iris recorder is not http.ResponseWriter! So need to map it.
-		r := middleware.NewResponseRecorder(ctx.Recorder().Naive())
-		r.Body = bytes.NewBuffer(ctx.Recorder().Body())
-		r.Status = ctx.Recorder().StatusCode()
+		if code := ctx.GetStatusCode(); yaag.IsStatusCodeValid(code) {
+			apiCall.MethodType = ctx.Method()
+			apiCall.CurrentPath = strings.Split(ctx.Request().RequestURI, "?")[0]
+			apiCall.ResponseBody = string(w.Body()[0:])
+			apiCall.ResponseCode = code
 
-		//iris recorder writes the recorded data to its original response recorder. So pass the testrecorder
-		// as responsewriter to after call.
-		middleware.After(apiCall, r, ctx.Request())
+			headers := make(map[string]string, len(w.Header()))
+			for k, v := range w.Header() {
+				headers[k] = strings.Join(v, " ")
+			}
+			apiCall.ResponseHeader = headers
+
+			go yaag.GenerateHtml(apiCall)
+		}
 	}
 }
