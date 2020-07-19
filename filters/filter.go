@@ -3,15 +3,16 @@ package filters
 import (
 	"encoding/json"
 	"encoding/xml"
+	"log"
+	"net/http"
+	"net/http/httptest"
+	"net/url"
+	"strings"
+
 	"github.com/betacraft/yaag/middleware"
 	"github.com/betacraft/yaag/yaag"
 	"github.com/betacraft/yaag/yaag/models"
 	"github.com/revel/revel"
-	"log"
-	"net/http/httptest"
-	"strings"
-	"net/url"
-	"net/http"
 )
 
 func FilterForApiDoc(c *revel.Controller, fc []revel.Filter) {
