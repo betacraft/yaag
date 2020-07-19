@@ -1,11 +1,11 @@
 package middleware
 
 import (
-	"net/http"
-	"bytes"
-	"net"
 	"bufio"
+	"bytes"
 	"errors"
+	"net"
+	"net/http"
 )
 
 //go:generate easytags $GOFILE
@@ -18,9 +18,9 @@ type responseRecorder struct {
 
 func NewResponseRecorder(w http.ResponseWriter) *responseRecorder {
 	r := &responseRecorder{
-		writer:w,
-		Status:http.StatusOK,
-		Body:bytes.NewBuffer(nil),
+		writer: w,
+		Status: http.StatusOK,
+		Body:   bytes.NewBuffer(nil),
 	}
 	return r
 }

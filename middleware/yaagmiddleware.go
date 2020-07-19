@@ -197,7 +197,7 @@ func ReadBody(req *http.Request) *string {
 }
 
 func After(apiCall *models.ApiCall, record *responseRecorder, r *http.Request) {
-	if strings.Contains(r.RequestURI, ".ico") || !yaag.IsOn(){
+	if strings.Contains(r.RequestURI, ".ico") || !yaag.IsOn() {
 		return
 	}
 	apiCall.MethodType = r.Method

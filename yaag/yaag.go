@@ -31,7 +31,6 @@ func Init(conf *Config) {
 		conf.DocPath = "apidoc.html"
 	}
 
-
 	filePath, err := filepath.Abs(conf.DocPath + ".json")
 	dataFile, err := os.Open(filePath)
 	defer dataFile.Close()
@@ -136,7 +135,7 @@ func deleteCommonHeaders(call *models.ApiCall) {
 	delete(call.RequestHeader, "User-Agent")
 }
 
-func IsStatusCodeValid(code int) bool  {
+func IsStatusCodeValid(code int) bool {
 	if code >= 200 && code < 300 {
 		return true
 	} else {

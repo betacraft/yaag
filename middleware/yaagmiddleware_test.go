@@ -3,17 +3,18 @@ package middleware
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/betacraft/yaag/yaag/models"
 	"net/http"
 	"net/http/httptest"
-	"testing"
-	"github.com/gorilla/websocket"
-	"github.com/betacraft/yaag/yaag"
-	"strings"
 	"os"
+	"strings"
+	"testing"
+
+	"github.com/betacraft/yaag/yaag"
+	"github.com/betacraft/yaag/yaag/models"
+	"github.com/gorilla/websocket"
 )
 
-func TestMain(m *testing.M)  {
+func TestMain(m *testing.M) {
 	yaag.Init(&yaag.Config{
 		On:       true,
 		DocTitle: "Test",
@@ -88,7 +89,7 @@ func TestWithWebsocketUpgrade(t *testing.T) {
 	}
 	s := httptest.NewServer(HandleFunc(next))
 	c, _, err := websocket.DefaultDialer.Dial(strings.Replace(
-		s.URL, "http","ws",1,
+		s.URL, "http", "ws", 1,
 	), nil)
 	if err != nil {
 		t.Fatal("dial:", err)

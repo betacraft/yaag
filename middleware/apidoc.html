@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title> API Documentation </title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+    <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>   
+    
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+        .hidden {
+            display:none;
+        }
+        pre {
+            outline: 1px solid #ccc;
+            padding: 5px; margin: 5px;
+        }
+
+        .string { color: green; }
+        .number { color: darkorange; }
+        .boolean { color: blue; }
+        .null { color: magenta; }
+        .key { color: red; }
+
+    </style>
+    <style type="text/css">
+        pre.prettyprint {
+            border: 1px solid #ccc;
+            margin-bottom: 0;
+            padding: 9.5px;
+        }
+    </style>
+    <script>
+         
+        function syntaxHighlight(json) {
+            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                var cls = 'number';
+                if (/^"/.test(match)) {
+                    if (/:$/.test(match)) {
+                        cls = 'key';
+                    } else {
+                        cls = 'string';
+                    }
+                } else if (/true|false/.test(match)) {
+                    cls = 'boolean';
+                } else if (/null/.test(match)) {
+                    cls = 'null';
+                }
+                return '<span class="' + cls + '">' + match + '</span>';
+            });
+        }
+
+        function spaceJson(json){
+            var validJson = JSON.parse(json);
+            return JSON.stringify(validJson, undefined, 4);
+        }
+    </script>
+
+</head>
+<body>
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Test</a>
+            <p class="navbar-text">Developed by Gophers at <a href="http://betacraft.co">Betacraft</a></p>
+        </div>
+            
+        
+    </div>
+    
+</nav>
+<div class="container-fluid" style="margin-top: 70px;margin-bottom: 20px;">
+    <div class="container-fluid">
+    <div class="col-md-4">
+        <div class="panel panel-default">
+              <div class="panel-heading">Base Urls</div>
+              <div class="panel-body">
+                
+                    <p>Production : <strong></strong></p>
+                
+                    <p>Staging : <strong></strong></p>
+                
+              </div>
+            </div>    
+        <ul class="nav nav-pills nav-stacked" role="tablist">
+            

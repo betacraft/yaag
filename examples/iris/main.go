@@ -4,8 +4,8 @@ package main
 import (
 	"github.com/kataras/iris/v12"
 
-	"github.com/betacraft/yaag/yaag"
 	"github.com/betacraft/yaag/irisyaag"
+	"github.com/betacraft/yaag/yaag"
 )
 
 type myXML struct {

@@ -1,8 +1,9 @@
 package controllers
 
 import (
-	"github.com/revel/revel"
 	"fmt"
+
+	"github.com/revel/revel"
 )
 
 type App struct {
