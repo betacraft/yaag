@@ -234,6 +234,28 @@ func main() {
 }
 ```
 
+## How to use with httprouter package
+
+1. Import github.com/betacraft/yaag/yaag
+2. Import github.com/betacraft/yaag/httprouteryaag
+3. Initialize yaag ```yaag.Init(&yaag.Config{On: true, DocTitle: "Httprouter", DocPath: "apidoc.html"})```
+4. Use it in your handlers as ```router.Handle("GET", "/", httprouteryaag.HandleFunc(handler))```
+
+#### Sample code
+
+```go
+func handler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+  fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
+}
+
+func main() {
+  yaag.Init(&yaag.Config{On: true, DocTitle: "Httprouter", DocPath: "apidoc.html", BaseUrls : map[string]string{"Production":"","Staging":""} })
+  router := httprouter.New()
+  router.Handle("GET", "/", httprouteryaag.HandleFunc(handler))
+  http.ListenAndServe(":8080", router)
+}
+```
+
 ## Screenshots
 
 #### API doc is generated based on the paths
