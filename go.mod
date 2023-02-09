@@ -6,7 +6,7 @@ require (
 	github.com/ajg/form v1.5.1 // indirect
 	github.com/codegangsta/inject v0.0.0-20150114235600-33e0aa1cb7c0 // indirect
 	github.com/fasthttp-contrib/websocket v0.0.0-20160511215533-1f3b11f56072 // indirect
-	github.com/gin-gonic/gin v1.7.0
+	github.com/gin-gonic/gin v1.7.7
 	github.com/go-martini/martini v0.0.0-20170121215854-22fa46961aab
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/google/go-querystring v1.0.0 // indirect
